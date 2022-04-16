@@ -10,6 +10,7 @@ import React from 'react';
 import type { Node } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import EditPageHome from './components/Pages/EditPageHome';
+import { Icon, Button } from '@rneui/themed';
 
 import {
   SafeAreaView,
@@ -75,6 +76,14 @@ const App: () => Node = () => {
           headerStyle: styles.headerStyle,
           headerTintColor: 'white',
           headerTitleAlign: 'center',
+          headerRight: (props) => (
+            <Icon name='save' color='white'
+              {...props}
+              onPress={() => {
+                // Do something
+              }}
+            /> 
+          ),
         }} />
       </Stack.Navigator>
 
