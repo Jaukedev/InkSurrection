@@ -8,7 +8,7 @@ const EditPageHome = ({navigation}) => {
       <Text>EditPageHome</Text>
       <Button
         title="Go to Home"
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('InkSurrection')}
       />
     </View>
   );
