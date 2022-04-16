@@ -13,7 +13,7 @@ import EditPageHome from './components/Pages/EditPageHome';
 
 import {
   SafeAreaView,
-  ScrollView,
+  // ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -23,10 +23,6 @@ import {
 
 import {
   Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomePage from './components/Pages/HomePage';
@@ -76,14 +72,6 @@ const App: () => Node = () => {
 
       <SafeAreaView style={backgroundStyle}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={backgroundStyle}>
-          <Header />
-          {/* <Text>
-            Home 
-          </Text> */}
-        </ScrollView>
       </SafeAreaView>
     </NavigationContainer>
   );
