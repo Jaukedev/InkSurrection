@@ -7,8 +7,8 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import type { Node } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import EditPageHome from './components/Pages/EditPageHome';
 
 import {
@@ -24,12 +24,12 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './components/Pages/HomePage';
 
 const Stack = createNativeStackNavigator();
 
-const Section = ({children, title}): Node => {
+const Section = ({ children, title }): Node => {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -65,9 +65,17 @@ const App: () => Node = () => {
   return (
     <NavigationContainer>
       {/* pensar en cambiar este stack */}
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomePage} />
-        <Stack.Screen name="Editing" component={EditPageHome} />
+      <Stack.Navigator style={styles.navigator} >
+        <Stack.Screen name="InkSurrection" component={HomePage} options={{
+          headerStyle: styles.headerStyle,
+          headerTintColor: 'white',
+          headerTitleAlign: 'center',
+        }} />
+        <Stack.Screen name="Editing" component={EditPageHome} options={{
+          headerStyle: styles.headerStyle,
+          headerTintColor: 'white',
+          headerTitleAlign: 'center',
+        }} />
       </Stack.Navigator>
 
       <SafeAreaView style={backgroundStyle}>
@@ -94,6 +102,13 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
+  headerStyle: {
+    backgroundColor: '#161718',
+  },
+  headerTitle: {
+    color: 'white',
+    alignSelf: "center",
+  }
 });
 
 export default App;
