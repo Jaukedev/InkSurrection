@@ -9,7 +9,7 @@
 import React from 'react';
 import type {Node} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import EditPageHome from './components/editPage/EditPageHome';
+import EditPageHome from './components/Pages/EditPageHome';
 
 import {
   SafeAreaView,
@@ -29,6 +29,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import HomePage from './components/Pages/HomePage';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,10 +70,8 @@ const App: () => Node = () => {
     <NavigationContainer>
       {/* pensar en cambiar este stack */}
       <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={EditPageHome}
-        />
+        <Stack.Screen name="Home" component={HomePage} />
+        <Stack.Screen name="Editing" component={EditPageHome} />
       </Stack.Navigator>
 
       <SafeAreaView style={backgroundStyle}>

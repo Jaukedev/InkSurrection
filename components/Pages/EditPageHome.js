@@ -7,8 +7,8 @@ const EditPageHome = ({navigation}) => {
     <View>
       <Text>EditPageHome</Text>
       <Button
-        title="vamos a otra pagina"
-        // onPress={() => navigation.navigate('Profile', {name: 'Jane'})}
+        title="Go to Home"
+        onPress={() => navigation.navigate('Home')}
       />
     </View>
   );
