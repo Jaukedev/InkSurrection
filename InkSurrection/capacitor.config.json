@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "InkSurrection",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
