@@ -1,5 +1,8 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar,IonRow,IonCol } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
+
+
+
 import './Tab3.css';
 const data = {
   image: 'https://www.w3schools.com/w3images/sound.jpg',
@@ -40,15 +43,6 @@ const Tab3: React.FC = () => {
           <IonTitle>Tab 3</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 3</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer name="Tab 3 page" />
-        <div id="root"></div>
-      </IonContent>
     </IonPage>
   );
 };
