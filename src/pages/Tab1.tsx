@@ -8,20 +8,15 @@ import './Tab1.scss';
 const Tab1: React.FC = () => {
   const imagePull = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
+    <IonPage >
+      <IonContent fullscreen className='content'>
         <IonRow>
           <IonCol className="header">
-            <img src={logo} alt="ink" />
+            <img src={logo} alt="InkSurrectionLogo" className='title'/>
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol class="container">
+          <IonCol className="containeer">
             dropzone
             {/* <ngx-dropzone class="drop" (change)="onSelect($event)" accept="image/jpeg,image/jpg,image/png" [multiple]="false">
             <ion-icon name="add"></ion-icon>
@@ -32,12 +27,14 @@ const Tab1: React.FC = () => {
           </IonCol>
         </IonRow>
         <IonRow>
-          <IonCol class="container">
+          <IonCol className="containeer">
             <div className="images">
               <div className="images-container">
                 <div className="one-image" >
                   {imagePull.map((image, i) => {
-                    return <img src={require('../assets/images/' + image + '.jpg')} key={i} alt="InkImage" />
+                    return <div className='one-image' key={i}>
+                      <img src={require('../assets/images/' + image + '.jpg')} key={i} alt="InkImage" />
+                    </div>
                   }
                   )}
                 </div>

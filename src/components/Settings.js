@@ -33,26 +33,25 @@ class Settings extends React.Component {
     render() {
         var onchange = this.props.onChange;
         return (
-            <div className="contentWrap">
-                <div className="sidebar">
-                    <div className="title">Filters</div>
-                    {this.props.settings.map(function (setting, index) {
-
-                        return (
-                            <div className="setting">
-                                <label className="filterName">
-                                    <div>{setting.name}</div>
-                                    <div>{setting.value}</div>
-                                </ label>
-                                {Settings.prototype.setVal(setting, onchange)}
-                            </div>
-                        )
-                    })}
-                </div>
-                Ola
-                <Image url={this.props.url} settings={this.props.settings} />
+          <div className="contentWrap">
+            <Image url={this.props.url} settings={this.props.settings} />
+            <div className="sidebar">
+              <div className="title">Filters</div>
+              {this.props.settings.map(function (setting, index) {
+                return (
+                  <div className="setting">
+                    <label className="filterName">
+                      <div>{setting.name}</div>
+                      <div>{setting.value}</div>
+                    </label>
+                    {Settings.prototype.setVal(setting, onchange)}
+                  </div>
+                );
+              })}
             </div>
-        )
+            Ola
+          </div>
+        );
     }
 }
 export default Settings;
