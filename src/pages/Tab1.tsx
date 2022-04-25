@@ -1,12 +1,27 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow, IonCol } from '@ionic/react';
+import { render } from '@testing-library/react';
 import { image } from 'ionicons/icons';
+import React from 'react';
 import logo from "../assets/icon/INK.png"
 import ExploreContainer from '../components/ExploreContainer';
-// import { NgxDropzoneComponent, NgxDropzonePreviewComponent } from 'ngx-dropzone';
 import './Tab1.scss';
 
-const Tab1: React.FC = () => {
-  const imagePull = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+class Tab1 extends React.Component {
+  selectedFile = '';
+  openModal = false;
+  imagesCode = ['1','2','3','4','5','6','7','8','9','10']
+
+   onSelectFile(event:any) {
+    console.log(event);
+    this.selectedFile = event;
+    this.openModal = true;
+    console.log(this.openModal);
+  }
+  getSelected(e:any){
+    console.log(e,this.selectedFile)
+    return (this.selectedFile == e)
+  }
+render(){
   return (
     <IonPage >
       <IonContent fullscreen className='content'>
@@ -31,9 +46,9 @@ const Tab1: React.FC = () => {
             <div className="images">
               <div className="images-container">
                 <div className="one-image" >
-                  {imagePull.map((image, i) => {
+                  {this.imagesCode.map((image, i) => {
                     return <div className='one-image' key={i}>
-                      <img src={require('../assets/images/' + image + '.jpg')} key={i} alt="InkImage" />
+                      <img src={require('../assets/images/' + image + '.jpg')} onClick={() => this.onSelectFile(image)} key={i} alt="InkImage" className={`${(image == this.selectedFile ? " selected" : "none")}`}/>
                     </div>
                   }
                   )}
@@ -45,6 +60,7 @@ const Tab1: React.FC = () => {
       </IonContent>
     </IonPage>
   );
+}
 };
 
 export default Tab1;
