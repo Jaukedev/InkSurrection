@@ -1,52 +1,99 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow, IonCol } from '@ionic/react';
-import { image } from 'ionicons/icons';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow, IonCol, IonIcon, IonButton, IonBackdrop } from '@ionic/react';
+import React, { useState, createContext, useEffect, useContext } from 'react';
+import { brush, trash, close, add } from 'ionicons/icons';
 import logo from "../assets/icon/INK.png"
 import ExploreContainer from '../components/ExploreContainer';
-// import { NgxDropzoneComponent, NgxDropzonePreviewComponent } from 'ngx-dropzone';
+import { useDropzone } from 'react-dropzone';
 import './Tab1.scss';
 
 const Tab1: React.FC = () => {
-  const imagePull = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+  const imagePull = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+  const [selectedFile, setSelectedFile] = useState('none');
+  const [openModal, setOpenModal] = useState(false);
+  const [files, setFiles] = useState([]);
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    maxFiles: 1, accept: '.xlsx', onDrop: (acceptedFiles) => {
+      const file = acceptedFiles[0];
+    }
+  });
+
+  function onSelect(event: File) {
+
+  }
+
+  function onSelectFile(event: string) {
+    console.log(event);
+    setSelectedFile(event)
+    setOpenModal(true);
+  }
+  function closeModal() {
+    setSelectedFile('none');
+    setOpenModal(false);
+  }
+
+  function onRemove() {
+    /*console.log(event);
+    this.files.splice(this.files.indexOf(event), 1);*/
+  }
+
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Tab 1</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent fullscreen>
-        <IonRow>
-          <IonCol className="header">
-            <img src={logo} alt="ink" />
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol class="container">
-            dropzone
-            {/* <ngx-dropzone class="drop" (change)="onSelect($event)" accept="image/jpeg,image/jpg,image/png" [multiple]="false">
-            <ion-icon name="add"></ion-icon>
-            <NgxDropzonePreviewComponent *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)" class="drop-prev">
-            <ngx-dropzone-label class="drop-prev-text">Archivo ({{ f.type }})</ngx-dropzone-label>
-          </NgxDropzonePreviewComponent>
-        </ngx-dropzone> */}
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol class="container">
-            <div className="images">
-              <div className="images-container">
-                <div className="one-image" >
-                  {imagePull.map((image, i) => {
-                    return <img src={require('../assets/images/' + image + '.jpg')} key={i} alt="InkImage" />
-                  }
-                  )}
+
+    <IonContent fullscreen className="content">
+      {openModal ? <IonBackdrop className='backdrop'></IonBackdrop> : <div></div>}
+      <IonRow>
+        <IonCol className="header">
+          <img className="title" src={logo} alt="ink" />
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol class="container">
+          <div {...getRootProps({ className: 'drop' })}>
+            <input {...getInputProps()} />
+            <IonIcon icon={add}></IonIcon>
+          </div>
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol class="container">
+          <div className="images">
+            <div className="images-container">
+              {imagePull.map((image, i) => {
+                return <div className="one-image" >
+                  <img className={`${selectedFile === image ? "selected" : "none"}`}
+                    src={require('../assets/images/' + image + '.jpeg')} key={i} alt="InkImage"
+                    onClick={() => onSelectFile(image)} />
                 </div>
-              </div>
+              }
+              )}
             </div>
-          </IonCol>
-        </IonRow>
-      </IonContent>
-    </IonPage>
+          </div>
+        </IonCol>
+      </IonRow>
+
+      <IonRow className="container">
+        <IonCol className={`modal ${openModal ? "opened" : "closed"}`} >
+          <div className="modal-header">
+            <IonIcon icon={close} className="icon" onClick={() => closeModal()} ></IonIcon>
+          </div>
+          <div className="modal-container">
+            <IonButton fill="outline" shape="round" color="#dca301" className="button" routerLink="/tabs/tab2">
+              <div className="button-container">
+                <span className="text">Editar</span>
+                <IonIcon className="icon" icon={brush}></IonIcon>
+              </div>
+            </IonButton>
+            <IonButton fill="outline" shape="round" color="#dca301" className="button">
+              <div className="button-container">
+                <span className="text">Eliminar</span>
+                <IonIcon className="icon" icon={trash}></IonIcon>
+              </div>
+            </IonButton>
+          </div>
+        </IonCol>
+      </IonRow>
+    </IonContent>
+
   );
 };
 
