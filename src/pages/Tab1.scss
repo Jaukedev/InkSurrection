@@ -1,5 +1,4 @@
 $margins: 25px;
-
 .content {
     --background: #161718;
     padding: 1rem !important;
@@ -8,15 +7,13 @@ $margins: 25px;
         display: flex;
         flex-direction: column;
         align-items: center;
-
         & .title {
             color: white;
             margin: $margins;
             width: 80%;
         }
     }
-
-    & .containeer {
+    & .container {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -24,14 +21,15 @@ $margins: 25px;
 
     & .drop {
         background: transparent !important;
-        width: 80%;
-
+        width: 70%;
         height: 110px;
         border-radius: 25px;
         border: 3px dashed #dca301;
         font-size: 62px;
         color: #dca301;
+        display: flex;
         justify-content: center !important;
+        align-items: center;
 
         &-prev {
             background: transparent !important;
@@ -47,45 +45,37 @@ $margins: 25px;
             }
         }
     }
-
     & .images {
         margin-top: 2rem;
         width: 80%;
-
         @media (min-width: 0px) {
             &-container {
                 column-count: 2;
             }
         }
-
         @media (min-width: 620px) {
             &-container {
                 column-count: 3;
             }
         }
-
         @media (min-width: 8200px) {
             &-container {
                 column-count: 4;
             }
         }
-
         & .one-image {
             padding-top: 5px;
             padding-bottom: 5px;
-
             img {
                 border-radius: 25px;
-
                 &.selected {
                     //border: 3px solid #DCA301;
-                    outline: 3px solid #dca301;
-                    outline-offset: -3px;
+                    outline: 5px solid #dca301;
+                    outline-offset: -5px;
                 }
             }
         }
     }
-
     & .modal {
         position: fixed;
         border-radius: 25px;
@@ -94,19 +84,16 @@ $margins: 25px;
         height: 300px;
 
         z-index: 2;
-
         &-header {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-
             & .icon {
                 margin: 10px;
                 font-size: 30px;
                 color: #dca301;
             }
         }
-
         &-container {
             display: flex;
             flex-direction: column;
@@ -114,22 +101,33 @@ $margins: 25px;
 
             & .button {
                 text-transform: capitalize;
-                --background: #161718;
+                background-color: #161718 !important;
+                border-radius: 25px;
+                height: 50px;
                 width: 80%;
                 color: #dca301;
                 margin-bottom: 10px;
+
+                &-container {
+                    display: flex;
+                    align-items: center;
+                    justify-items: center;
+                    & .text {
+                        padding-right: 10px;
+                    }
+                    & .icon{
+                        font-size: 18px;
+                    }
+                }
             }
-
         }
-
         &.opened {
             bottom: -100px;
             animation-duration: 0.5s;
             animation-name: slidein;
         }
-
         &.closed {
-            bottom: -300px;
+            bottom: -299px;
             animation-duration: 0.5s;
             animation-name: slideout;
         }
@@ -144,7 +142,6 @@ $margins: 25px;
             bottom: -100px;
         }
     }
-
     @keyframes slideout {
         from {
             bottom: -100px;
@@ -155,8 +152,7 @@ $margins: 25px;
         }
     }
 }
-
-ion-backdrop {
+.backdrop {
     z-index: 1;
     position: fixed;
     opacity: 0.3;

@@ -1,66 +1,100 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow, IonCol } from '@ionic/react';
-import { render } from '@testing-library/react';
-import { image } from 'ionicons/icons';
-import React from 'react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow, IonCol, IonIcon, IonButton, IonBackdrop } from '@ionic/react';
+import React, { useState, createContext, useEffect, useContext } from 'react';
+import { brush, trash, close, add } from 'ionicons/icons';
 import logo from "../assets/icon/INK.png"
 import ExploreContainer from '../components/ExploreContainer';
+import { useDropzone } from 'react-dropzone';
 import './Tab1.scss';
 
-class Tab1 extends React.Component {
-  selectedFile = '';
-  openModal = false;
-  imagesCode = ['1','2','3','4','5','6','7','8','9','10']
+const Tab1: React.FC = () => {
+  const imagePull = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
+  const [selectedFile, setSelectedFile] = useState('none');
+  const [openModal, setOpenModal] = useState(false);
+  const [files, setFiles] = useState([]);
 
-   onSelectFile(event:any) {
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    maxFiles: 1, accept: '.xlsx', onDrop: (acceptedFiles:any) => {
+      const file = acceptedFiles[0];
+    }
+  });
+
+  function onSelect(event: File) {
+
+  }
+
+  function onSelectFile(event: string) {
     console.log(event);
-    this.selectedFile = event;
-    this.openModal = true;
-    console.log(this.openModal);
+    setSelectedFile(event)
+    setOpenModal(true);
   }
-  getSelected(e:any){
-    console.log(e,this.selectedFile)
-    return (this.selectedFile == e)
+  function closeModal() {
+    setSelectedFile('none');
+    setOpenModal(false);
   }
-render(){
+
+  function onRemove() {
+    /*console.log(event);
+    this.files.splice(this.files.indexOf(event), 1);*/
+  }
+
   return (
-    <IonPage >
-      <IonContent fullscreen className='content'>
-        <IonRow>
-          <IonCol className="header">
-            <img src={logo} alt="InkSurrectionLogo" className='title'/>
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol className="containeer">
-            dropzone
-            {/* <ngx-dropzone class="drop" (change)="onSelect($event)" accept="image/jpeg,image/jpg,image/png" [multiple]="false">
-            <ion-icon name="add"></ion-icon>
-            <NgxDropzonePreviewComponent *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)" class="drop-prev">
-            <ngx-dropzone-label class="drop-prev-text">Archivo ({{ f.type }})</ngx-dropzone-label>
-          </NgxDropzonePreviewComponent>
-        </ngx-dropzone> */}
-          </IonCol>
-        </IonRow>
-        <IonRow>
-          <IonCol className="containeer">
-            <div className="images">
-              <div className="images-container">
-                <div className="one-image" >
-                  {this.imagesCode.map((image, i) => {
-                    return <div className='one-image' key={i}>
-                      <img src={require('../assets/images/' + image + '.jpg')} onClick={() => this.onSelectFile(image)} key={i} alt="InkImage" className={`${(image == this.selectedFile ? " selected" : "none")}`}/>
-                    </div>
-                  }
-                  )}
+
+    <IonContent fullscreen className="content">
+      {openModal ? <IonBackdrop className='backdrop'></IonBackdrop> : <div></div>}
+      <IonRow>
+        <IonCol className="header">
+          <img className="title" src={logo} alt="ink" />
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol class="container">
+          <div {...getRootProps({ className: 'drop' })}>
+            <input {...getInputProps()} />
+            <IonIcon icon={add}></IonIcon>
+          </div>
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol class="container">
+          <div className="images">
+            <div className="images-container">
+              {imagePull.map((image, i) => {
+                return <div className="one-image" >
+                  <img className={`${selectedFile === image ? "selected" : "none"}`}
+                    src={require('../assets/images/' + image + '.jpeg')} key={i} alt="InkImage"
+                    onClick={() => onSelectFile(image)} />
                 </div>
-              </div>
+              }
+              )}
             </div>
-          </IonCol>
-        </IonRow>
-      </IonContent>
-    </IonPage>
+          </div>
+        </IonCol>
+      </IonRow>
+
+      <IonRow className="container">
+        <IonCol className={`modal ${openModal ? "opened" : "closed"}`} >
+          <div className="modal-header">
+            <IonIcon icon={close} className="icon" onClick={() => closeModal()} ></IonIcon>
+          </div>
+          <div className="modal-container">
+            <IonButton fill="outline" shape="round" color="#dca301" className="button" routerLink="/tabs/tab2">
+              <div className="button-container">
+                <span className="text">Editar</span>
+                <IonIcon className="icon" icon={brush}></IonIcon>
+              </div>
+            </IonButton>
+            <IonButton fill="outline" shape="round" color="#dca301" className="button">
+              <div className="button-container">
+                <span className="text">Eliminar</span>
+                <IonIcon className="icon" icon={trash}></IonIcon>
+              </div>
+            </IonButton>
+          </div>
+        </IonCol>
+      </IonRow>
+    </IonContent>
+
   );
-}
 };
 
 export default Tab1;
