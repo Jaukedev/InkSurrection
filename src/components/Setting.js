@@ -1,20 +1,35 @@
-import { IonCol, IonRow } from "@ionic/react";
-import React from "react";
-import Image from "./Image";
-import "./Settings.scss";
+import React, { useState, useEffect } from "react";
+import { IonButton, IonCol, IonRow } from "@ionic/react";
 
-class Settings extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setVal = this.setVal.bind(this);
-  }
+const Setting = (props) => {
+  const [showList, setShowList] = useState({
+    contrast: false,
+    hue: false,
+    brightness: false,
+    saturate: false,
+    sepia: false,
+    invert: false,
+  });
+  //   useEffect(() => {
+  //   });
+  var onchange = props.onChange;
+  var showAll = props.showAll;
 
-  setVal(setting, onChange) {
+  function setVal(setting, onChange) {
+    console.log(showList);
+
+    if (showAll) {
+      console.log("dentro del loop");
+      for (let key in showList) {
+        showList[key] = true;
+      }
+    }
+    console.log(showList);
     switch (setting.name) {
       case "contrast":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -23,13 +38,14 @@ class Settings extends React.Component {
             id={setting.name}
             onChange={onChange}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
       case "hue":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -38,13 +54,14 @@ class Settings extends React.Component {
             id={setting.name}
             onChange={onChange}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
       case "brightness":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -53,13 +70,14 @@ class Settings extends React.Component {
             id={setting.name}
             onChange={onChange}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
       case "saturate":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -68,13 +86,14 @@ class Settings extends React.Component {
             id={setting.name}
             onChange={onChange}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
       case "sepia":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -83,6 +102,7 @@ class Settings extends React.Component {
             id={setting.name}
             onChange={onChange}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
@@ -90,7 +110,7 @@ class Settings extends React.Component {
       case "invert":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -99,6 +119,7 @@ class Settings extends React.Component {
             id={setting.name}
             onChange={onChange}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
@@ -106,7 +127,7 @@ class Settings extends React.Component {
       case "grayscale":
         return (
           <input
-          className="e-range"
+            className="e-range"
             key={setting.name}
             type="range"
             step="1"
@@ -114,37 +135,33 @@ class Settings extends React.Component {
             max="100"
             id={setting.name}
             onChange={onChange}
+            value={setting.value}
             defaultValue={setting.value}
+            disabled={showList[setting.name]}
           />
         );
         break;
       default:
-        return <input
-        className="e-range" key={setting.name} type="range" />;
+        return <input className="e-range" key={setting.name} type="range" />;
     }
   }
-  render() {
-    var onchange = this.props.onChange;
-    return (
-      <div className="containeer">
-        <Image url={this.props.url} settings={this.props.settings} />
-        <div className="sidebar">
-          <div className="title">Filters</div>
-          {this.props.settings.map(function (setting, index) {
-            return (
-              <IonRow className="setting" key={setting.name}>
-                <label className="filterName">
-                  <div>{setting.name}</div>
-                </label>
-                {Settings.prototype.setVal(setting, onchange)}
-                <div>{setting.value}</div>
-              </IonRow>
-            );
-          })}
-        </div>
-        Ola
+  return (
+    <div>
+      <div className="sidebar">
+        {props.filterSelected ? (
+          <IonRow className="setting" key={props.filterSelected.name}>
+            <label className="filterName">
+              <div>{props.filterSelected.name}</div>
+            </label>
+            {setVal(props.filterSelected, onchange)}
+            <div>{props.filterSelected.value}</div>
+          </IonRow>
+        ) : (
+          <div></div>
+        )}
       </div>
-    );
-  }
-}
-export default Settings;
+    </div>
+  );
+};
+
+export default Setting;

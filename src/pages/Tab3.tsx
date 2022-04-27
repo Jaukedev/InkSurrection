@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRow, IonCol } from '@ionic/react';
+import { IonContent } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import Canvas from '../components/Canvas'
 
@@ -36,9 +36,9 @@ const data = {
 const Tab3: React.FC = () => {
 
     return (
-        <IonPage>
+        <IonContent>
             <Canvas></Canvas>
-        </IonPage>
+        </IonContent>
     );
 };
 

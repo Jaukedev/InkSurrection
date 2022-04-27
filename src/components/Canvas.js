@@ -1,5 +1,8 @@
-import Settings from './Settings'
+// import Settings from './Settings'
+
 import React from 'react'
+import SettingsFuntional from './SettingsFuntional';
+
 
 const data = {
     image: 'https://www.w3schools.com/w3images/sound.jpg',
@@ -32,11 +35,7 @@ const data = {
 }
 class ImageEditor extends React.Component {
 
-    // constructor() {
-    //     super();
-    // }
-
-    handleChange(e: any) {
+    handleChange(e) {
         var name = e.target.id;
         var value = e.target.value;
         switch (name) {
@@ -64,8 +63,9 @@ class ImageEditor extends React.Component {
 
     render() {
         return (
+            
             <div className="settings">
-                <Settings settings={data.settings} url={data.image} onChange={this.handleChange.bind(this)} />
+                <SettingsFuntional settings={data.settings} url={data.image} onChange={this.handleChange.bind(this)} />
             </div>
         )
     }
