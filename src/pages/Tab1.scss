@@ -2,6 +2,7 @@ $margins: 25px;
 .content {
     --background: #161718;
     padding: 1rem !important;
+    z-index: 102;
 
     & .header {
         display: flex;
