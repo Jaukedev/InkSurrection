@@ -1,0 +1,90 @@
+.containeer {
+  display: flex;
+  flex-direction: column;
+  .header {
+    display: flex;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    .tittle {
+      flex-grow: 5;
+
+      margin: 5%;
+    }
+  }
+  .filter {
+    display: flex;
+    margin-top: 8%;
+    flex-direction: column;
+    align-content: center;
+    // margin-right: 8%;
+    // margin-left: 8%;
+
+    .buttonBox {
+      align-content: center;
+      display: flex;
+      justify-content: center;
+    }
+    .modalContainer {
+      align-content: center;
+      display: flex;
+      justify-content: center;
+      .modalHeader {
+        margin: 5%;
+        margin-bottom: 10%;
+        display: flex;
+        flex-direction: row;
+        justify-content: SPACE-BETWEEN;
+        align-items: center;
+      }
+      .modal {
+        border-radius: 25px;
+        background: #2c2c2eec;
+        width: 85%;
+        padding: 5%;
+        .caption {
+          display: flex;
+          flex-direction: row;
+          flex-grow: 10;
+          align-items: center;
+
+          .buttonSelect {
+            flex-grow: 3;
+          }
+          .tittle {
+            flex-grow: 17;
+          }
+        }
+      }
+    }
+  }
+}
+input[type="range"] {
+  width: 100%;
+}
+.setting {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  margin-bottom: 2%;
+  margin: 50px;
+}
+.button {
+  text-transform: capitalize;
+  background-color: #161718 !important;
+  border-radius: 25px;
+  color: #dca301;
+  margin-bottom: 10px;
+
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    & .text {
+      padding-right: 10px;
+    }
+    & .icon {
+      font-size: 18px;
+    }
+  }
+}
