@@ -9,32 +9,32 @@ function SettingsFuntional(props) {
   const [openModal, setOpenModal] = useState(false);
   const [filterSelected, setFilterSelected] = useState();
   var onchange = props.onChange;
-  const defaultSettings= [
-        {
-          name: "contrast",
-          value: "100%",
-        },
-        {
-          name: "hue",
-          value: "0deg",
-        },
-        {
-          name: "brightness",
-          value: "100%",
-        },
-        {
-          name: "saturate",
-          value: "100%",
-        },
-        {
-          name: "sepia",
-          value: "0%",
-        },
-        {
-          name: "invert",
-          value: "0%",
-        },
-      ];
+  const defaultSettings = [
+    {
+      name: "contrast",
+      value: "100%",
+    },
+    {
+      name: "hue",
+      value: "0deg",
+    },
+    {
+      name: "brightness",
+      value: "100%",
+    },
+    {
+      name: "saturate",
+      value: "100%",
+    },
+    {
+      name: "sepia",
+      value: "0%",
+    },
+    {
+      name: "invert",
+      value: "0%",
+    },
+  ];
   function setVal(setting, onChange) {
     switch (setting.name) {
       case "contrast":
@@ -145,21 +145,26 @@ function SettingsFuntional(props) {
     setFilterSelected({ name: filter, value: value });
     setOpenModal(false);
   }
-  function reset(){
+  function reset() {
     // recorrer el setings default y correr el onchange 
   }
   return (
     <>
       <div className="containeer">
         <div className="header">
+          <IonButton className="button" fill="clear" color="#161718" routerLink="/tab1">
+            <IonIcon className="icon" icon={close} size="large" ></IonIcon>
+          </IonButton>
+
           <label className="tittle">Insurrection</label>
-          <div>
-            <IonButton shape="round" color="none">
-              <IonIcon icon={save} size="large"></IonIcon>
-            </IonButton>
-          </div>
+          <IonButton className="button" fill="clear" color="#161718" routerLink="/tab1">
+            <IonIcon className="icon" icon={save} size="medium" ></IonIcon>
+          </IonButton>
         </div>
-        <Image url={props.url} settings={props.settings} />
+        <div className="image-container">
+          <Image url={props.url} settings={props.settings} />
+        </div>
+
         {filterSelected ? (
           <Setting
             settings={props.settings}
@@ -170,67 +175,62 @@ function SettingsFuntional(props) {
         ) : (
           <div></div>
         )}
-        <div className="filter">
-          <div className="buttonBox">
-            <IonButton color="none" onClick={() => setOpenModal(true)}>
-              <IonIcon icon={menu} size="large"></IonIcon>
-            </IonButton>
-          </div>
-          {openModal ? (
-            <div className="modalContainer">
-              <div className="modal">
-                <div className="modalHeader">
-                  <div>
-                    <IonIcon
-                      icon={refresh}
-                      size="large"
-                      onClick={() => reset()}
-                    ></IonIcon>
-                  </div>
-                  <label className="filterName">Filtros</label>
-                  <div>
-                    <IonIcon
-                      icon={close}
-                      size="large"
-                      onClick={() => setOpenModal(false)}
-                    ></IonIcon>
-                  </div>
+        <div className={`filter ${openModal ? "opened" : "closed"}`}>
+          {openModal ? <div></div> :
+            <div className="buttonBox">
+              <IonButton color="#2c2c2eec" fill="clear" onClick={() => setOpenModal(true)}>
+                <IonIcon icon={menu} size="large"></IonIcon>
+              </IonButton>
+            </div>
+          }
+
+          <div className="modalContainer" >
+            <div className="modal">
+              <div className="modalHeader">
+                <div>
+                  <IonIcon
+                    icon={refresh}
+                    size="large"
+                    onClick={() => reset()}
+                  ></IonIcon>
                 </div>
-                {openModal ? (
-                  <div className="sidebar">
-                    {props.settings.map(function (setting, index) {
-                      return (
-                        <div key={setting.name}>
-                          <div className="caption">
-                            <label className="tittle">
-                              <div>{setting.name}</div>
-                            </label>
-                            <IonButton
-                              className="button buttonSelect"
-                              shape="round"
-                              color="#dca301"
-                              fill="outline"
-                              onClick={() =>
-                                settingFilter(setting.name, setting.value)
-                              }
-                            >
-                              Seleccionar
-                            </IonButton>
-                          </div>
-                          {setVal(setting, onchange)}
-                          <div>{setting.value}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div></div>
-                )}
+                <label className="filterName">Filtros</label>
+                <div>
+                  <IonIcon
+                    icon={close}
+                    size="large"
+                    onClick={() => setOpenModal(false)}
+                  ></IonIcon>
+                </div>
+              </div>
+              <div className="sidebar">
+                {props.settings.map(function (setting, index) {
+                  return (
+                    <div key={setting.name}>
+                      <div className="caption">
+                        <label className="tittle">
+                          <div>{setting.name}</div>
+                        </label>
+                        <IonButton
+                          className="button buttonSelect"
+                          shape="round"
+                          color="#dca301"
+                          fill="outline"
+                          onClick={() =>
+                            settingFilter(setting.name, setting.value)
+                          }
+                        >
+                          Seleccionar
+                        </IonButton>
+                      </div>
+                      {setVal(setting, onchange)}
+                      <div>{setting.value}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          ) : (
-            <div></div>
-          )}
+          </div>
         </div>
       </div>
     </>

@@ -5,14 +5,14 @@ import logo from "../assets/icon/INK.png"
 import ExploreContainer from '../components/ExploreContainer';
 import { useDropzone } from 'react-dropzone';
 import './Tab1.scss';
-import { Image } from '../context/imageContext';
+import { ImageContext } from '../context/imageContext';
 
 const Tab1: React.FC = () => {
   const imagePull = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
   const [selectedFile, setSelectedFile] = useState('none');
   const [openModal, setOpenModal] = useState(false);
   const [file, setFile] = useState("none");
-  const [image, setImage] = useContext(Image);
+  const [image, setImage] = useContext(ImageContext);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     maxFiles: 1, accept: '.jpeg, .jpg, .png', onDrop: (acceptedFiles) => {
@@ -95,7 +95,7 @@ const Tab1: React.FC = () => {
             <IonIcon icon={close} className="icon" onClick={() => closeModal()} ></IonIcon>
           </div>
           <div className="modal-container">
-            <IonButton fill="outline" shape="round" color="#dca301" className="button" routerLink="/tab2">
+            <IonButton fill="outline" shape="round" color="#dca301" className="button" routerLink="/tab3">
               <div className="button-container">
                 <span className="text">Editar</span>
                 <IonIcon className="icon" icon={brush}></IonIcon>

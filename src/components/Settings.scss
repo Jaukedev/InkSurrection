@@ -1,25 +1,51 @@
 .containeer {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  background: #161718;
   .header {
     display: flex;
-    display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
-    .tittle {
-      flex-grow: 5;
-
-      margin: 5%;
+    margin: 0.5rem;
+    width: 100%;
+    & .tittle {
+      color: #dca301;
+      font-size: 25px;
+    }
+    & .button {
+      color: #161718;
+      .icon {
+        color: #9c9c9c;
+        margin: 5%;
+      }
     }
   }
-  .filter {
+  & .image-container {
     display: flex;
-    margin-top: 8%;
-    flex-direction: column;
-    align-content: center;
+    width: auto;
+    height: 50%;
+  }
+  .filter {
+    position: fixed;
+    border-radius: 25px;
+    background: #2c2c2eec;
+    width: 85%;
+
     // margin-right: 8%;
     // margin-left: 8%;
+    &.opened {
+      bottom: -276px;
 
+      animation-duration: 0.5s;
+      animation-name: slidein;
+    }
+    &.closed {
+      bottom: -920px;
+      animation-duration: 0.5s;
+      animation-name: slideout;
+    }
     .buttonBox {
       align-content: center;
       display: flex;
@@ -41,7 +67,10 @@
         border-radius: 25px;
         background: #2c2c2eec;
         width: 85%;
+        display: flex;
+        flex-direction: column;
         padding: 5%;
+        overflow: scroll;
         .caption {
           display: flex;
           flex-direction: row;
@@ -57,6 +86,24 @@
         }
       }
     }
+  }
+}
+@keyframes slidein {
+  from {
+    bottom: -920px;
+  }
+
+  to {
+    bottom: -276px;
+  }
+}
+@keyframes slideout {
+  from {
+    bottom: -276px;
+  }
+
+  to {
+    bottom: -920px;
   }
 }
 input[type="range"] {

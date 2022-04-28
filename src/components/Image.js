@@ -1,24 +1,23 @@
-import React from "react";
+import React, { useContext } from 'react';
 import "./Image.css";
-class Image extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    var imgStyle = {
-      filter: ` contrast(${this.props.settings[0].value}) hue-rotate(${this.props.settings[1].value}) brightness(${this.props.settings[2].value}) saturate(${this.props.settings[3].value}) sepia(${this.props.settings[4].value})
-invert(${this.props.settings[5].value})`,
-    };
+import { ImageContext } from '../context/imageContext';
+
+function Image(props) {
+  const [image, setImage] = useContext(ImageContext);
+
     return (
       <div className="imageContainer">
         <img
           className="guitar"
-          src="https://www.w3schools.com/w3images/sound.jpg"
-          style={imgStyle}
+          src={require('../assets/images/1.jpeg')}
+          style={{
+            filter: ` contrast(${props.settings[0].value}) hue-rotate(${props.settings[1].value}) brightness(${props.settings[2].value}) saturate(${props.settings[3].value}) sepia(${props.settings[4].value})
+            invert(${props.settings[5].value})`,
+          }}
         />{" "}
       </div>
     );
-  }
+
 }
 
 
