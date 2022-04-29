@@ -3,6 +3,8 @@ import React, { useState, createContext, useEffect, useContext } from 'react';
 import ExploreContainer from '../components/ExploreContainer';
 import './Tab2.css';
 import { Image } from '../context/imageContext';
+import OpenCv from '../components/openCV/OpenCv';
+
 
 const Tab2: React.FC = () => {
   const [image, setImage] = useContext(Image);
@@ -11,6 +13,7 @@ const Tab2: React.FC = () => {
       < img
         src={image} alt="InkImage"
       />
+      <OpenCv></OpenCv>
     </IonPage>
   );
 };
