@@ -2,10 +2,10 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/rea
 import React, { useState, createContext, useEffect, useContext } from 'react';
 import ExploreContainer from '../components/ExploreContainer';
 import './Tab2.css';
-import { Image } from '../context/imageContext';
+import { ImageContext } from '../context/imageContext';
 
 const Tab2: React.FC = () => {
-  const [image, setImage] = useContext(Image);
+  const [image, setImage] = useContext(ImageContext);
   return (
     <IonPage>
       < img

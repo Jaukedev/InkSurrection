@@ -1,25 +1,51 @@
 .containeer {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  background: #161718;
   .header {
     display: flex;
-    display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
-    .tittle {
-      flex-grow: 5;
-
-      margin: 5%;
+    margin: 0.5rem;
+    width: 100%;
+    & .tittle {
+      color: #dca301;
+      font-size: 25px;
+    }
+    & .button {
+      color: #161718;
+      .icon {
+        color: #9c9c9c;
+        margin: 5%;
+      }
     }
   }
-  .filter {
+  & .image-container {
     display: flex;
-    margin-top: 8%;
-    flex-direction: column;
-    align-content: center;
+    width: auto;
+    height: 50%;
+  }
+  .filter {
+    position: fixed;
+    border-radius: 25px;
+    background: #2c2c2eec;
+    width: 85%;
+
     // margin-right: 8%;
     // margin-left: 8%;
+    &.opened {
+      top: 2%;
 
+      animation-duration: 0.5s;
+      animation-name: slideinS;
+    }
+    &.closed {
+      top: 97%;
+      animation-duration: 0.5s;
+      animation-name: slideoutS;
+    }
     .buttonBox {
       align-content: center;
       display: flex;
@@ -29,6 +55,8 @@
       align-content: center;
       display: flex;
       justify-content: center;
+      background: #2c2c2eec;
+      border-radius: 25px;
       .modalHeader {
         margin: 5%;
         margin-bottom: 10%;
@@ -38,10 +66,12 @@
         align-items: center;
       }
       .modal {
-        border-radius: 25px;
-        background: #2c2c2eec;
+        
         width: 85%;
+        display: flex;
+        flex-direction: column;
         padding: 5%;
+        overflow: scroll;
         .caption {
           display: flex;
           flex-direction: row;
@@ -57,6 +87,24 @@
         }
       }
     }
+  }
+}
+@keyframes slideinS {
+  from {
+    bottom: 97%;
+  }
+
+  to {
+    bottom: 2%;
+  }
+}
+@keyframes slideoutS {
+  from {
+    bottom: 2%;
+  }
+
+  to {
+    bottom: 97%;
   }
 }
 input[type="range"] {
