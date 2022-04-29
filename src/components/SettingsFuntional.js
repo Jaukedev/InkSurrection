@@ -178,7 +178,7 @@ function SettingsFuntional(props) {
         <div className={`filter ${openModal ? "opened" : "closed"}`}>
           {openModal ? <div></div> :
             <div className="buttonBox">
-              <IonButton color="#2c2c2eec" fill="clear" onClick={() => setOpenModal(true)}>
+              <IonButton color="dark" fill="clear" onClick={() => setOpenModal(true)}>
                 <IonIcon icon={menu} size="large"></IonIcon>
               </IonButton>
             </div>
