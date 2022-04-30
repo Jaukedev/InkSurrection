@@ -1,9 +1,8 @@
-// import Settings from './Settings'
-
+import { IonContent } from '@ionic/react';
 import React from 'react'
-import SettingsFuntional from './SettingsFuntional';
+import SettingsFuntional from '../components/SettingsFuntional';
 
-
+import './Tab3.css';
 const data = {
     image: 'https://www.w3schools.com/w3images/sound.jpg',
     settings: [
@@ -33,6 +32,7 @@ const data = {
         }
     ]
 }
+
 class ImageEditor extends React.Component {
 
     handleChange(e) {
@@ -63,8 +63,7 @@ class ImageEditor extends React.Component {
 
     render() {
         return (
-            
-            <div className="settings">
+            <div className="settings" style={{ height: '100%'}}>
                 <SettingsFuntional settings={data.settings} url={data.image} onChange={this.handleChange.bind(this)} />
             </div>
         )

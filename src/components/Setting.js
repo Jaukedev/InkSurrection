@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IonButton, IonCol, IonRow } from "@ionic/react";
+import "./Settings.scss";
 
 const Setting = (props) => {
   const [showList, setShowList] = useState({
@@ -146,21 +147,15 @@ const Setting = (props) => {
     }
   }
   return (
-    <div>
-      <div className="sidebar">
-        {props.filterSelected ? (
-          <IonRow className="setting" key={props.filterSelected.name}>
-            <label className="filterName">
-              <div>{props.filterSelected.name}</div>
-            </label>
-            {setVal(props.filterSelected, onchange)}
-            <div>{props.filterSelected.value}</div>
-          </IonRow>
-        ) : (
-          <div></div>
-        )}
+    <IonRow className="setting" key={props.filterSelected.name}>
+      <div className="filterValues">
+        <span className="filterName">
+          {props.filterSelected.name}
+        </span>
+        <span className="filterValue">{props.filterSelected.value}</span>
       </div>
-    </div>
+      {setVal(props.filterSelected, onchange)}
+    </IonRow>
   );
 };
 
