@@ -1,4 +1,4 @@
-import { IonButton, IonCol, IonContent, IonRow } from '@ionic/react';
+import { IonButton, IonCol, IonContent, IonRow, IonRange } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react'
 import { imageSettingsClass } from './Interface/InterfazOpenCv'
 import "./OpenCv.scss";
@@ -7,6 +7,7 @@ const OpenCv = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [imageSettings, setImageSettings] = useState(new imageSettingsClass().settings);
   const [operationOrgCtx, setOperationOrgCtx] = useState<null | CanvasRenderingContext2D>(null);
+  const [alpha, setalpha] = useState<number>(0)
 
   const putImage = () => {
 
@@ -27,23 +28,25 @@ const OpenCv = () => {
         imageSettings.imageHeight = imageSettings.image.height;
 
         operationOrgCtx.drawImage(imageSettings.image, 0, 0, imageSettings.image.width, imageSettings.image.height);
-        let imageData = operationOrgCtx.getImageData(0, 0, 574, 967);
+        console.log(imageSettings.image.width, imageSettings.image.height)
+        let imageData = operationOrgCtx.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height);
+
 
         imageSettings.imageData = imageData;
         console.log(imageData);
         generatePixelMatrix()
       }
     }
-    imageSettings.image.src = require('../../assets/images/1.jpeg')
+    imageSettings.image.src = require('../../assets/images/pichuleitor.jpg')
 
   }
-  const sharp = () => {
-    console.log('sharping');
-
+  const sharp = (e: any) => {
+    let value = parseInt(e.target.value) / 100
+    
     applyFilter([
-      [1.1, 0, 0],
-      [0, 1.1, 0],
-      [0, 0, 1.1]
+      [0, 0, 0],
+      [0, value, 0],
+      [0, 0, 0]
     ]);
 
   }
@@ -84,11 +87,13 @@ const OpenCv = () => {
       }
 
       // ! hay que remplazar la imagen con la verga filtrada 
+      // * podria limitar los blancos para el brillo y que sea mas rapido
     }
 
-    console.log(imageSettings.imageData);
+    
     operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
-    imageSettings.image.src = canvasRef.current?.toDataURL;
+    // imageSettings.image.src = canvasRef.current?.toDataURL;
+    
     // this.previewImage();
     // this.previewImage();
   }
@@ -140,9 +145,13 @@ const OpenCv = () => {
         <IonRow className='canvas-container'>
           <canvas ref={canvasRef}>
           </canvas>
-          <IonButton onClick={() => sharp()}>
+          <IonButton onClick={sharp}>
             dale tu col
           </IonButton>
+          <input type='range'  step={1}
+            min={0}
+            max={100}  onChange={sharp}></input>
+          {/* value={alpha} */}
         </IonRow>
 
       </IonContent>
