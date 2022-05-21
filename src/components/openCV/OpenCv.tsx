@@ -8,7 +8,7 @@ const OpenCv = () => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [imageSettings, setImageSettings] = useState(new imageSettingsClass().settings);
-  const [imageAux, setImageAux] = useState<any>({ image: [], r: [], g: [], b: [] });
+  const [imageAux, setImageAux] = useState<any>(0);
   const [operationOrgCtx, setOperationOrgCtx] = useState<null | CanvasRenderingContext2D>(null);
   const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [] });
   const [alpha, setalpha] = useState<number>(0)
@@ -30,8 +30,8 @@ const OpenCv = () => {
     // para actualizar de forma global la imagen , se remplaza el r g y b de la imagensetings por el del auxiliar
     if (filter != editionData.filterSelected) {
       editionData.filterSelected = filter;
-      editionData.filterArray = [...editionData.filterArray, filter];
-      console.log(editionData)
+      editionData.filterArray = [...editionData.filterArray, { filter, imageAux }];
+      console.log(imageAux)
       generatePixelMatrix();
     }
 
@@ -118,6 +118,8 @@ const OpenCv = () => {
 
   }
   const Sharp = (e: any) => {
+    setImageAux(e.target.value);
+    console.log(imageAux);
     changeFilter(filters.texture);
 
     let value = parseInt(e.target.value) / 100
