@@ -24,12 +24,17 @@ const OpenCv = () => {
     texture
   }
 
-  const changeFilter = (filter: number, filterAmount: number ) => {
-    if (filter != editionData.filterSelected) {
+  const changeFilter = (filter: number, filterAmount: number) => {
+    const callBack = (element: any) => element.filter == filter;
+
+    let indexFind = editionData.filterArray.findIndex(callBack);
+    if (filter != editionData.filterSelected && indexFind == -1) {
       editionData.filterSelected = filter;
       editionData.filterArray = [...editionData.filterArray, { filter, filterAmount }];
       console.log(editionData.filterArray);
       generatePixelMatrix();
+    } else {
+      console.log(indexFind);
     }
 
   }
