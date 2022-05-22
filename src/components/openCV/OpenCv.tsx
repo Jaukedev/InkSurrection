@@ -24,14 +24,11 @@ const OpenCv = () => {
     texture
   }
 
-  const changeFilter = (filter: number) => {
-    // ! cuando se cambia de filtro antes de aplicar el nuevo, la nueva imagen sera auxiliar
-    // de esta forma se remplaza el image aux no mas
-    // para actualizar de forma global la imagen , se remplaza el r g y b de la imagensetings por el del auxiliar
+  const changeFilter = (filter: number, filterAmount: number ) => {
     if (filter != editionData.filterSelected) {
       editionData.filterSelected = filter;
-      editionData.filterArray = [...editionData.filterArray, { filter, imageAux }];
-      console.log(imageAux)
+      editionData.filterArray = [...editionData.filterArray, { filter, filterAmount }];
+      console.log(editionData.filterArray);
       generatePixelMatrix();
     }
 
@@ -59,7 +56,6 @@ const OpenCv = () => {
         let imageData = operationOrgCtx.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height);
 
         imageSettings.imageData = imageData;
-        console.log('hola');
         generatePixelMatrix()
       }
     }
@@ -107,7 +103,8 @@ const OpenCv = () => {
 
   }
   const expose = (e: any) => {
-    changeFilter(filters.expose);
+
+    changeFilter(filters.expose, e.target.value);
     let value = parseInt(e.target.value) / 100;
 
     applyFilterII([
@@ -119,9 +116,7 @@ const OpenCv = () => {
   }
   const Sharp = (e: any) => {
     setImageAux(e.target.value);
-    console.log(imageAux);
-    changeFilter(filters.texture);
-
+    changeFilter(filters.texture, e.target.value);
     let value = parseInt(e.target.value) / 100
 
     applyFilterII([
@@ -176,8 +171,8 @@ const OpenCv = () => {
     // ! cuando se pone se remplaza el aux 
   }
   const grayScale = (e: any) => {
-    changeFilter(filters.saturationG);
-
+    setImageAux(e.target.value);
+    changeFilter(filters.saturationG, e.target.value);
     let factor = parseInt(e.target.value) / 100;
     let pos = 0;
     // hacerlo con map y con index
@@ -218,7 +213,8 @@ const OpenCv = () => {
 
   }
   const contrast = (e: any) => {
-    changeFilter(filters.contrast);
+    setImageAux(e.target.value);
+    changeFilter(filters.contrast, e.target.value);
 
     let beta;
     e.target.value > 0 ? (beta = 20) : beta = -100;
@@ -259,7 +255,8 @@ const OpenCv = () => {
 
   }
   const saturation = (e: any) => {
-    changeFilter(filters.saturationG);
+    setImageAux(e.target.value);
+    changeFilter(filters.saturationG, e.target.value);
 
     let beta = 150;
     let sum = imageSettings.imageData.data.reduce((previous: any, current: any) => current += previous);
@@ -307,7 +304,8 @@ const OpenCv = () => {
 
 
   const blackwhite = (e: any) => {
-    e.target.name == 'black' ? changeFilter(filters.black) : changeFilter(filters.white);
+    setImageAux(e.target.value);
+    e.target.name == 'black' ? changeFilter(filters.black, e.target.value) : changeFilter(filters.white, e.target.value);
     let factor = parseInt(e.target.value) / 100
     let pos = 0;
     imageSettings.redPixelMatrix.map((rowValue: any, i: number) => {
