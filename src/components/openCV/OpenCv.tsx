@@ -35,8 +35,11 @@ const OpenCv = () => {
     texture: 0
   }
   const reset = () => {
-    console.log(imageSettingsInit == imageSettings.imageData);
-    operationOrgCtx?.putImageData(imageAux, 0, 0);
+    imageSettings.imageData = imageAux;
+    generatePixelMatrix();
+    operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
+    console.log('reseteando');
+
   }
   const changeFilter = (filter: number, filterAmount: number) => {
     const callBack = (element: any) => element.filter == filter;
@@ -73,15 +76,18 @@ const OpenCv = () => {
         imageSettings.imageWidth = imageSettings.image.width;
         imageSettings.imageHeight = imageSettings.image.height;
 
-        aux?.drawImage(imageSettings.image, 0, 0, imageSettings.image.width, imageSettings.image.height);
         operationOrgCtx.drawImage(imageSettings.image, 0, 0, imageSettings.image.width, imageSettings.image.height);
-        let imageDataAux = aux?.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height)
         let imageData = operationOrgCtx.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height);
-        setImageAux(imageDataAux);
+        if (!imageAux) {
+          console.log('armando nuevo image Data Aux');
+          aux?.drawImage(imageSettings.image, 0, 0, imageSettings.image.width, imageSettings.image.height);
+          let imageDataAux = aux?.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height);
+          setImageAux(imageDataAux);
+        }
         imageSettings.imageData = imageData;
         if (!imageSettingsInit) {
 
-            setImageSettingsInit(imageSettings)
+          setImageSettingsInit(imageSettings)
 
 
 
@@ -91,7 +97,7 @@ const OpenCv = () => {
 
 
 
-        
+
           console.log('poniendo los datos de la imagen ')
           setImageSettingsInit(imageSettings.imageData);
         }
@@ -154,7 +160,7 @@ const OpenCv = () => {
 
   }
   const Sharp = (e: any) => {
-    
+
     changeFilter(filters.texture, e.target.value);
     let value = parseInt(e.target.value) / 100
 
@@ -210,7 +216,7 @@ const OpenCv = () => {
     // ! cuando se pone se remplaza el aux 
   }
   const grayScale = (e: any) => {
-    
+
     changeFilter(filters.saturationG, e.target.value);
     let factor = parseInt(e.target.value) / 100;
     let pos = 0;
@@ -252,7 +258,7 @@ const OpenCv = () => {
 
   }
   const contrast = (e: any) => {
-    
+
     changeFilter(filters.contrast, e.target.value);
 
     let beta;
@@ -294,7 +300,7 @@ const OpenCv = () => {
 
   }
   const saturation = (e: any) => {
-    
+
     changeFilter(filters.saturationG, e.target.value);
 
     let beta = 150;
@@ -343,7 +349,7 @@ const OpenCv = () => {
 
 
   const blackwhite = (e: any) => {
-    
+
     e.target.name == 'black' ? changeFilter(filters.black, e.target.value) : changeFilter(filters.white, e.target.value);
     let factor = parseInt(e.target.value) / 100
     let pos = 0;
@@ -419,13 +425,16 @@ const OpenCv = () => {
     <>
       <IonContent className='container' >
         <div>OpenCv</div>
-        <IonRow className='canvas-container'>
-          <canvas ref={canvasRef}>
-          </canvas>
+        <IonRow >
+          <IonCol className='canvas-container'>
+            <canvas ref={canvasRef}>
+            </canvas>
+          </IonCol>
           <IonButton onClick={applyFilterII}>
             retroceder
           </IonButton>
-          <IonButton defaultValue={'black'} onClick={reset}>
+        {/* falta una key parece, solo se ejecuta una vez */}
+          <IonButton defaultValue={'black'} onClick={reset} > 
             reset
           </IonButton>
           exposición
