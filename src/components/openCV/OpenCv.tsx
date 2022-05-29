@@ -34,25 +34,27 @@ const OpenCv = () => {
     sturation: 0,
     texture: 0
   }
-  const reset = () => {
-    imageSettings.imageData = imageAux;
-    generatePixelMatrix();
-    operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
-    console.log('reseteando');
 
+  const reset = () => {   
+    console.log('reseteando');
+    operationOrgCtx?.putImageData(imageAux, 0, 0);
+    editionData.filterSelected = 0;
+    editionData.filterArray = [];
+    setalpha(alpha + 1);
+    putImage()
+    generatePixelMatrix();
   }
   const changeFilter = (filter: number, filterAmount: number) => {
     const callBack = (element: any) => element.filter == filter;
 
-    let indexFind = editionData.filterArray.findIndex(callBack);
+    let indexFounnd = editionData.filterArray.findIndex(callBack);
     if (filter != editionData.filterSelected) {
       editionData.filterSelected = filter;
       editionData.filterArray = [...editionData.filterArray, { filter, filterAmount }];
       console.log(editionData.filterArray);
       generatePixelMatrix();
-      if (indexFind != -1) {
-        //  reload filters cuando se termine de editar ese filtro
-        // ! aca pondría un dialog para resetear el filtro
+      if (indexFounnd != -1) {
+
       }
     }
 
@@ -424,55 +426,61 @@ const OpenCv = () => {
   return (
     <>
       <IonContent className='container' >
-        <div>OpenCv</div>
+
         <IonRow >
           <IonCol className='canvas-container'>
             <canvas ref={canvasRef}>
             </canvas>
           </IonCol>
-          <IonButton onClick={applyFilterII}>
-            retroceder
-          </IonButton>
-        {/* falta una key parece, solo se ejecuta una vez */}
-          <IonButton defaultValue={'black'} onClick={reset} > 
-            reset
-          </IonButton>
-          exposición
-          <input type='range' step={1}
-            min={0}
-            defaultValue={0}
-            max={100} onChange={expose}></input>
-          contraste
-          <input type='range' step={1}
-            min={-100}
-            defaultValue={0}
-            max={100} onChange={contrast}></input>
-          black
-          <input type='range' step={1}
-            min={0}
-            defaultValue={0}
-            name={'black'}
-            max={200} onChange={blackwhite}></input>
-          withe
-          <input type='range' step={1}
-            min={0}
-            name={'white'}
-            max={200} onChange={blackwhite}></input>
-          'saturation (gray scale)'
-          <input type='range' step={1}
-            min={0}
-            defaultValue={0}
-            max={100} onChange={grayScale}></input>
-          'saturation '
-          <input type='range' step={1}
-            min={0}
-            defaultValue={0}
-            max={100} onChange={saturation}></input>
-          textura
-          <input type='range' step={1}
-            min={0}
-            defaultValue={0}
-            max={100} onChange={Sharp}></input>
+          <div>
+
+            <IonButton onClick={applyFilterII}>
+              retroceder
+            </IonButton>
+            {/* falta una key parece, solo se ejecuta una vez */}
+            <IonButton defaultValue={'black'} onClick={reset} key={alpha} >
+              reset
+            </IonButton>
+          </div>
+          <br />
+          <div>
+            exposición
+            <input type='range' step={1}
+              min={0}
+              defaultValue={0}
+              max={100} onChange={expose}></input>
+            contraste
+            <input type='range' step={1}
+              min={-100}
+              defaultValue={0}
+              max={100} onChange={contrast}></input>
+            black
+            <input type='range' step={1}
+              min={0}
+              defaultValue={0}
+              name={'black'}
+              max={200} onChange={blackwhite}></input>
+            withe
+            <input type='range' step={1}
+              min={0}
+              name={'white'}
+              max={200} onChange={blackwhite}></input>
+            'saturation (gray scale)'
+            <input type='range' step={1}
+              min={0}
+              defaultValue={0}
+              max={100} onChange={grayScale}></input>
+            'saturation '
+            <input type='range' step={1}
+              min={0}
+              defaultValue={0}
+              max={100} onChange={saturation}></input>
+            textura
+            <input type='range' step={1}
+              min={0}
+              defaultValue={0}
+              max={100} onChange={Sharp}></input>
+          </div>
         </IonRow>
 
       </IonContent>
