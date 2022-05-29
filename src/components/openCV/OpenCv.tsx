@@ -1,4 +1,4 @@
-import { IonButton, IonCol, IonContent, IonRow, IonRange } from '@ionic/react';
+import { IonButton, IonCol, IonContent, IonRow, IonRange, IonLoading } from '@ionic/react';
 import { count } from 'console';
 import { truncate } from 'fs';
 import React, { useEffect, useRef, useState } from 'react'
@@ -7,12 +7,21 @@ import "./OpenCv.scss";
 const OpenCv = () => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const expoRef = useRef<any>(null);
+  const contRef = useRef<any>(null);
+  const blackRef = useRef<any>(null);
+  const whiteRef = useRef<any>(null);
+  const satuRef = useRef<any>(null);
+  const texRef = useRef<any>(null);
   const [imageSettings, setImageSettings] = useState(new imageSettingsClass().settings);
   const [imageSettingsInit, setImageSettingsInit] = useState<any>(null);
   const [imageAux, setImageAux] = useState<any>(0);
   const [operationOrgCtx, setOperationOrgCtx] = useState<null | CanvasRenderingContext2D>(null);
-  const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [] });
-  const [alpha, setalpha] = useState<number>(0)
+  const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [{ filter: 0, filterAmount: 0 }] });
+  const [alpha, setalpha] = useState<number>(0);
+  const [showLoading, setShowLoading] = useState(false);
+
+
 
   enum filters {
     none = 0,
@@ -34,8 +43,60 @@ const OpenCv = () => {
     sturation: 0,
     texture: 0
   }
+  const before = () => {
+    let beforeArray = editionData.filterArray.pop();
+    let beforeFilter = editionData.filterArray[editionData.filterArray.length - 1].filter;
+    console.log('el filtro anterior es', editionData.filterArray[editionData.filterArray.length - 1].filter)
+    console.log(editionData.filterArray);
+    if (beforeArray.filter) {
+      let e: any = {}
+      console.log('reseting')
+      switch (beforeArray.filter) {
+        case 1:
+          e = { target: { value: '0' } }
+          expose(e);
+          expoRef.current.value = 0;
+          break;
 
-  const reset = () => {   
+        case 2:
+          e = { target: { value: 0 } }
+          contrast(e)
+          contRef.current.value = 0;
+          break;
+
+        case 3:
+          e = { target: { value: 0 , name:'black'} }
+          contrast(e)
+          blackRef.current.value = 0;
+          break;
+        
+        case 4:
+          e = { target: { value: 0 , name:'white'} }
+          contrast(e)
+          whiteRef.current.value = 0;
+          break;
+
+        case 6:
+          console.log('reseteando el sat')
+          e = { target: { value: 0 } }
+          saturation(e)
+          satuRef.current.value = 0;
+          break;
+
+        case 7:
+          e = { target: { value: 0 } }
+          Sharp(e)
+          texRef.current.value = 0;
+          break;
+
+        default:
+          break;
+      }
+      editionData.filterSelected = beforeFilter;
+    }
+
+  }
+  const reset = () => {
     console.log('reseteando');
     operationOrgCtx?.putImageData(imageAux, 0, 0);
     editionData.filterSelected = 0;
@@ -51,7 +112,7 @@ const OpenCv = () => {
     if (filter != editionData.filterSelected) {
       editionData.filterSelected = filter;
       editionData.filterArray = [...editionData.filterArray, { filter, filterAmount }];
-      console.log(editionData.filterArray);
+      console.log('actualizando el filtro');
       generatePixelMatrix();
       if (indexFounnd != -1) {
 
@@ -150,7 +211,8 @@ const OpenCv = () => {
 
   }
   const expose = (e: any) => {
-
+    console.log(e)
+    console.log('expo', e.target.value);
     changeFilter(filters.expose, e.target.value);
     let value = parseInt(e.target.value) / 100;
 
@@ -175,10 +237,7 @@ const OpenCv = () => {
   }
 
   const applyFilterII = (filter: any, factor: any = 1) => {
-    // TODO if(filterchangue){
-    // TODO   actualizar el filtro
-    // TODO  cargar rgb anterior como referencia
-    // TODO }
+    console.log('aplicando filtro', factor)
     let pos = 0;
     let RAux = [];
     let GAux = [];
@@ -212,10 +271,7 @@ const OpenCv = () => {
         imageSettings.imageData.data[pos * 4 + 3] = newAlpha;
       })
     })
-    //TODO  guardar nuevos rgb la nueva imagen y imprimirla
     operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
-    //  //! generar matrix nueva es cuando hay cambio de filtro
-    // ! cuando se pone se remplaza el aux 
   }
   const grayScale = (e: any) => {
 
@@ -303,7 +359,7 @@ const OpenCv = () => {
   }
   const saturation = (e: any) => {
 
-    changeFilter(filters.saturationG, e.target.value);
+    changeFilter(filters.sturation, e.target.value);
 
     let beta = 150;
     let sum = imageSettings.imageData.data.reduce((previous: any, current: any) => current += previous);
@@ -432,9 +488,14 @@ const OpenCv = () => {
             <canvas ref={canvasRef}>
             </canvas>
           </IonCol>
+          <IonLoading
+            isOpen={showLoading}
+            onDidDismiss={() => setShowLoading(false)}
+            message={'Cargando...'}
+          />
           <div>
 
-            <IonButton onClick={applyFilterII}>
+            <IonButton onClick={before}>
               retroceder
             </IonButton>
             {/* falta una key parece, solo se ejecuta una vez */}
@@ -446,38 +507,45 @@ const OpenCv = () => {
           <div>
             exposición
             <input type='range' step={1}
+              ref={expoRef}
               min={0}
               defaultValue={0}
               max={100} onChange={expose}></input>
             contraste
             <input type='range' step={1}
+              ref={contRef}
               min={-100}
               defaultValue={0}
               max={100} onChange={contrast}></input>
             black
             <input type='range' step={1}
               min={0}
+              ref={blackRef}
               defaultValue={0}
               name={'black'}
               max={200} onChange={blackwhite}></input>
             withe
             <input type='range' step={1}
               min={0}
+              ref={whiteRef}
               name={'white'}
               max={200} onChange={blackwhite}></input>
             'saturation (gray scale)'
             <input type='range' step={1}
               min={0}
+
               defaultValue={0}
               max={100} onChange={grayScale}></input>
             'saturation '
             <input type='range' step={1}
               min={0}
+              ref={satuRef}
               defaultValue={0}
               max={100} onChange={saturation}></input>
             textura
             <input type='range' step={1}
               min={0}
+              ref={texRef}
               defaultValue={0}
               max={100} onChange={Sharp}></input>
           </div>
