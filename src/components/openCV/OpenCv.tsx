@@ -43,75 +43,110 @@ const OpenCv = () => {
     sturation: 0,
     texture: 0
   }
-  const before = () => {
-    let beforeArray = editionData.filterArray.pop();
-    let beforeFilter = editionData.filterArray[editionData.filterArray.length - 1].filter;
-    console.log('el filtro anterior es', editionData.filterArray[editionData.filterArray.length - 1].filter)
-    console.log(editionData.filterArray);
-    if (beforeArray.filter) {
-      let e: any = {}
-      console.log('reseting')
-      switch (beforeArray.filter) {
+  const before = async () => {
+    reset(false)
+    let e: any = {}
+    setShowLoading(true);
+    editionData.filterArray.map((element: any, index: number) => {
+
+      console.log('filtro', index)
+      switch (element.filter) {
         case 1:
-          e = { target: { value: '0' } }
-          expose(e);
-          expoRef.current.value = 0;
+          e = { target: { value: element.filterAmount } }
+          expose(e, false);
+          expoRef.current.value = element.filterAmount;
           break;
 
         case 2:
           e = { target: { value: 0 } }
           contrast(e)
-          contRef.current.value = 0;
+          contRef.current.value = element.filterAmount;
           break;
 
         case 3:
-          e = { target: { value: 0 , name:'black'} }
-          contrast(e)
-          blackRef.current.value = 0;
+          e = { target: { value: 0, name: 'black' } }
+          blackwhite(e)
+          blackRef.current.value = element.filterAmount;
           break;
-        
+
         case 4:
-          e = { target: { value: 0 , name:'white'} }
-          contrast(e)
-          whiteRef.current.value = 0;
+          e = { target: { value: 0, name: 'white' } }
+          blackwhite(e)
+          whiteRef.current.value = element.filterAmount;
           break;
 
         case 6:
           console.log('reseteando el sat')
           e = { target: { value: 0 } }
           saturation(e)
-          satuRef.current.value = 0;
+          satuRef.current.value = element.filterAmount;
           break;
 
         case 7:
           e = { target: { value: 0 } }
           Sharp(e)
-          texRef.current.value = 0;
+          texRef.current.value = element.filterAmount;
           break;
 
         default:
           break;
       }
-      editionData.filterSelected = beforeFilter;
-    }
 
+    });
+    setShowLoading(false);
+    return 0;
   }
-  const reset = () => {
+  const reset = (UpdateFilterArray: any = true) => {
     console.log('reseteando');
     operationOrgCtx?.putImageData(imageAux, 0, 0);
     editionData.filterSelected = 0;
-    editionData.filterArray = [];
     setalpha(alpha + 1);
     putImage()
     generatePixelMatrix();
+    let e: any;
+    editionData.filterArray.map((element: any, index: number) => {
+      if (index < editionData.filterArray.length - 1) {
+        console.log('filtro', index)
+        switch (element.filter) {
+          case 1:
+            expoRef.current.value = 0;
+            break;
+
+          case 2:
+            contRef.current.value = 0;
+            break;
+
+          case 3:
+            blackRef.current.value = 0;
+            break;
+
+          case 4:
+            whiteRef.current.value = 0;
+            break;
+
+          case 6:
+            satuRef.current.value = 0;
+            break;
+
+          case 7:
+            texRef.current.value = 0;
+            break;
+
+          default:
+            break;
+        }
+      }
+
+    });
+    UpdateFilterArray ? editionData.filterArray = [] : editionData.filterArray = [...editionData.filterArray];
   }
-  const changeFilter = (filter: number, filterAmount: number) => {
+  const changeFilter = (filter: number, filterAmount: number, update: any) => {
     const callBack = (element: any) => element.filter == filter;
 
     let indexFounnd = editionData.filterArray.findIndex(callBack);
     if (filter != editionData.filterSelected) {
       editionData.filterSelected = filter;
-      editionData.filterArray = [...editionData.filterArray, { filter, filterAmount }];
+      update ? editionData.filterArray = [...editionData.filterArray, { filter, filterAmount }] : editionData.filterArray = [...editionData.filterArray];
       console.log('actualizando el filtro');
       generatePixelMatrix();
       if (indexFounnd != -1) {
@@ -142,7 +177,6 @@ const OpenCv = () => {
         operationOrgCtx.drawImage(imageSettings.image, 0, 0, imageSettings.image.width, imageSettings.image.height);
         let imageData = operationOrgCtx.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height);
         if (!imageAux) {
-          console.log('armando nuevo image Data Aux');
           aux?.drawImage(imageSettings.image, 0, 0, imageSettings.image.width, imageSettings.image.height);
           let imageDataAux = aux?.getImageData(0, 0, imageSettings.image.width, imageSettings.image.height);
           setImageAux(imageDataAux);
@@ -210,10 +244,10 @@ const OpenCv = () => {
     // }]
 
   }
-  const expose = (e: any) => {
+  const expose = (e: any, update: any = true) => {
     console.log(e)
     console.log('expo', e.target.value);
-    changeFilter(filters.expose, e.target.value);
+    changeFilter(filters.expose, e.target.value, update);
     let value = parseInt(e.target.value) / 100;
 
     applyFilterII([
@@ -225,7 +259,7 @@ const OpenCv = () => {
   }
   const Sharp = (e: any) => {
 
-    changeFilter(filters.texture, e.target.value);
+    changeFilter(filters.texture, e.target.value, true);
     let value = parseInt(e.target.value) / 100
 
     applyFilterII([
@@ -239,9 +273,7 @@ const OpenCv = () => {
   const applyFilterII = (filter: any, factor: any = 1) => {
     console.log('aplicando filtro', factor)
     let pos = 0;
-    let RAux = [];
-    let GAux = [];
-    let BAux = [];
+
 
     imageSettings.redPixelMatrix.map((rowValue: any, i: number) => {
       rowValue.map((colValue: any, j: number) => {
@@ -275,7 +307,7 @@ const OpenCv = () => {
   }
   const grayScale = (e: any) => {
 
-    changeFilter(filters.saturationG, e.target.value);
+    changeFilter(filters.saturationG, e.target.value, true);
     let factor = parseInt(e.target.value) / 100;
     let pos = 0;
     // hacerlo con map y con index
@@ -317,7 +349,7 @@ const OpenCv = () => {
   }
   const contrast = (e: any) => {
 
-    changeFilter(filters.contrast, e.target.value);
+    changeFilter(filters.contrast, e.target.value, true);
 
     let beta;
     e.target.value > 0 ? (beta = 20) : beta = -100;
@@ -359,7 +391,7 @@ const OpenCv = () => {
   }
   const saturation = (e: any) => {
 
-    changeFilter(filters.sturation, e.target.value);
+    changeFilter(filters.sturation, e.target.value, true);
 
     let beta = 150;
     let sum = imageSettings.imageData.data.reduce((previous: any, current: any) => current += previous);
@@ -408,7 +440,7 @@ const OpenCv = () => {
 
   const blackwhite = (e: any) => {
 
-    e.target.name == 'black' ? changeFilter(filters.black, e.target.value) : changeFilter(filters.white, e.target.value);
+    e.target.name == 'black' ? changeFilter(filters.black, e.target.value, true) : changeFilter(filters.white, e.target.value, true);
     let factor = parseInt(e.target.value) / 100
     let pos = 0;
     imageSettings.redPixelMatrix.map((rowValue: any, i: number) => {
