@@ -44,55 +44,53 @@ const OpenCv = () => {
     texture: 0
   }
   const before = async () => {
-    reset(false)
     let e: any = {}
     setShowLoading(true);
-    editionData.filterArray.map((element: any, index: number) => {
-
-      console.log('filtro', index)
-      switch (element.filter) {
+    if (editionData.filterArray[editionData.filterArray.length-1].filter != 0 ){
+      console.log(editionData.filterArray)
+      let currentFilter = editionData.filterArray.pop();
+      switch (currentFilter.filter) {
         case 1:
-          e = { target: { value: element.filterAmount } }
-          expose(e, false);
-          expoRef.current.value = element.filterAmount;
-          break;
-
-        case 2:
           e = { target: { value: 0 } }
-          contrast(e)
-          contRef.current.value = element.filterAmount;
+          expose(e, false); 
+          expoRef.current.value = 0;
           break;
-
+  
+        case 2:
+          e = { target: { value: 0} }
+          contrast(e)
+          contRef.current.value = 0;
+          break;
+  
         case 3:
           e = { target: { value: 0, name: 'black' } }
           blackwhite(e)
-          blackRef.current.value = element.filterAmount;
+          blackRef.current.value = currentFilter.filterAmount;
           break;
-
+  
         case 4:
           e = { target: { value: 0, name: 'white' } }
           blackwhite(e)
-          whiteRef.current.value = element.filterAmount;
+          whiteRef.current.value = currentFilter.filterAmount;
           break;
-
+  
         case 6:
           console.log('reseteando el sat')
           e = { target: { value: 0 } }
           saturation(e)
-          satuRef.current.value = element.filterAmount;
+          satuRef.current.value = currentFilter.filterAmount;
           break;
-
+  
         case 7:
           e = { target: { value: 0 } }
           Sharp(e)
-          texRef.current.value = element.filterAmount;
+          texRef.current.value = currentFilter.filterAmount;
           break;
-
+  
         default:
           break;
       }
-
-    });
+    }
     setShowLoading(false);
     return 0;
   }
