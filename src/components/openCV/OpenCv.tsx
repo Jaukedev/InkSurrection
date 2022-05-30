@@ -103,41 +103,12 @@ const OpenCv = () => {
     setalpha(alpha + 1);
     putImage()
     generatePixelMatrix();
-    let e: any;
-    editionData.filterArray.map((element: any, index: number) => {
-      if (index < editionData.filterArray.length - 1) {
-        console.log('filtro', index)
-        switch (element.filter) {
-          case 1:
-            expoRef.current.value = 0;
-            break;
-
-          case 2:
-            contRef.current.value = 0;
-            break;
-
-          case 3:
-            blackRef.current.value = 0;
-            break;
-
-          case 4:
-            whiteRef.current.value = 0;
-            break;
-
-          case 6:
-            satuRef.current.value = 0;
-            break;
-
-          case 7:
-            texRef.current.value = 0;
-            break;
-
-          default:
-            break;
-        }
-      }
-
-    });
+    expoRef.current.value = 0;
+    contRef.current.value = 0;
+    blackRef.current.value = 0;
+    whiteRef.current.value = 0;
+    satuRef.current.value = 0;
+    texRef.current.value = 0;
     UpdateFilterArray ? editionData.filterArray = [] : editionData.filterArray = [...editionData.filterArray];
   }
   const changeFilter = (filter: number, filterAmount: number, update: any) => {
