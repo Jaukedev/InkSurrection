@@ -30,7 +30,7 @@ const OpenCv = () => {
     black,
     white,
     saturationG,
-    sturation,
+    saturation,
     texture
   }
   const filterDefaultValues = {
@@ -40,7 +40,7 @@ const OpenCv = () => {
     black: 0,
     white: 0,
     saturationG: 0,
-    sturation: 0,
+    saturation: 0,
     texture: 0
   }
   const before = async () => {
@@ -285,7 +285,7 @@ const OpenCv = () => {
   }
   const grayScale = (e: any, update: any = true) => {
 
-    changeFilter(filters.saturationG, e.target.value, update);
+    changeFilter(filters.saturation, e.target.value, update);
     let factor = parseInt(e.target.value) / 100;
     let pos = 0;
     // hacerlo con map y con index
@@ -367,9 +367,14 @@ const OpenCv = () => {
 
 
   }
+  const saturationHandler = (e: any, update: any = true) => {
+    let newE = { target: { value: 0 } } ;
+    newE.target.value = Math.abs(e.target.value);
+    e.target.value < 0 ? grayScale(newE, update) : saturation(newE, update);
+  }
   const saturation = (e: any, update: any = true) => {
 
-    changeFilter(filters.sturation, e.target.value, update);
+    changeFilter(filters.saturation, e.target.value, update);
 
     let beta = 150;
     let sum = imageSettings.imageData.data.reduce((previous: any, current: any) => current += previous);
@@ -540,18 +545,12 @@ const OpenCv = () => {
               ref={whiteRef}
               name={'white'}
               max={200} onChange={blackwhite}></input>
-            'saturation (gray scale)'
+            saturation 
             <input type='range' step={1}
-              min={0}
-
-              defaultValue={0}
-              max={100} onChange={grayScale}></input>
-            'saturation '
-            <input type='range' step={1}
-              min={0}
+              min={-100}
               ref={satuRef}
               defaultValue={0}
-              max={100} onChange={saturation}></input>
+              max={100} onChange={saturationHandler}></input>
             textura
             <input type='range' step={1}
               min={0}
