@@ -23,8 +23,8 @@ const OpenCv = () => {
   const [alpha, setalpha] = useState<number>(0);
   const [showLoading, setShowLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [filterSelected, setFilterSelected] = useState({ name: "none", function: undefined, reference: undefined });
-
+  const [filterSelected, setFilterSelected] = useState({ name: "none", function: undefined, reference: undefined, filterName: 0 });
+  const [filtersValues, setFiltersValues] = useState<any>([0, 0, 0, 0, 0, 0, 0])
 
 
   enum filters {
@@ -37,70 +37,100 @@ const OpenCv = () => {
     saturation,
     texture
   }
-  const [filtersValues, setFiltersValues] = useState<any>([0,0,0,0,0,0,0])
-  const before = async () => {
-    let e: any = {}
-    setShowLoading(true);
-    let index = editionData.filterArray.length - 1
-    if (index > 0) {
-      console.log(editionData.filterArray)
-      let currentFilter = editionData.filterArray.pop();
-      if (index == 1) {
-        reset()
-      } else {
-        let fils = { ...filtersValues}
-        fils[currentFilter.filter + 1] = currentFilter.filterAmount
-        setFiltersValues(fils)
-        console.log(filtersValues[currentFilter.filter] )
-        switch (currentFilter.filter) {
-          case 1:
-
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
-            expose(e, false);
-            e = { target: { value: 5 } }
-            saturation(e, false)
-            expoRef.current.value = 0;
-            break;
-
-          case 2:
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 4 } };
-            contrast(e, false)
-            contRef.current.value = 0;
-            break;
-
-          case 3:
-            e = { target: { value: 0, name: 'black' } }
-            blackwhite(e, false)
-            blackRef.current.value = 0;
-            break;
-
-          case 4:
-            e = { target: { value: 0, name: 'white' } }
-            blackwhite(e, false)
-            whiteRef.current.value = 0;
-            break;
-
-          case 6:
-            console.log('reseteando el sat')
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
-            saturation(e, false)
-            satuRef.current.value = 0;
-            break;
-
-          case 7:
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
-            Sharp(e, false)
-            texRef.current.value = 0;
-            break;
-
-          default:
-            break;
-        }
-      }
+  const filterHandler = (e: any) => {
+    let curFil = parseInt(filters[filterSelected.filterName])
+    let filVals = filtersValues
+    filVals[curFil - 1] = e.target.value
+    console.log(filVals)
+    switch (curFil) {
+      case 1:
+        console.log(e.target.name, 'expose')
+        expose(e);
+        break;
+      case 2:
+        console.log(e.target.name, 'contrast')
+        contrast(e);
+        break;
+      case 3:
+      case 4:
+        console.log(e.target.name, 'blackwhite')
+        blackwhite(e);
+        break;
+      case 6:
+        console.log(e.target.name, 'saturation')
+        saturation(e);
+        break;
+      case 7:
+        console.log(e.target.name, 'Sharp')
+        Sharp(e);
+        break;
+      default:
+        break;
     }
-    setShowLoading(false);
-    return 0;
   }
+  // const before = async () => {
+  //   let e: any = {}
+  //   setShowLoading(true);
+  //   let index = editionData.filterArray.length - 1
+  //   if (index > 0) {
+  //     console.log(editionData.filterArray)
+  //     let currentFilter = editionData.filterArray.pop();
+  //     if (index == 1) {
+  //       reset()
+  //     } else {
+  //       let fils = { ...filtersValues}
+  //       fils[currentFilter.filter + 1] = currentFilter.filterAmount
+  //       setFiltersValues(fils)
+  //       console.log(filtersValues[currentFilter.filter] )
+  //       switch (currentFilter.filter) {
+  //         case 1:
+
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
+  //           expose(e, false);
+  //           e = { target: { value: 5 } }
+  //           saturation(e, false)
+  //           expoRef.current.value = 0;
+  //           break;
+
+  //         case 2:
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 4 } };
+  //           contrast(e, false)
+  //           contRef.current.value = 0;
+  //           break;
+
+  //         case 3:
+  //           e = { target: { value: 0, name: 'black' } }
+  //           blackwhite(e, false)
+  //           blackRef.current.value = 0;
+  //           break;
+
+  //         case 4:
+  //           e = { target: { value: 0, name: 'white' } }
+  //           blackwhite(e, false)
+  //           whiteRef.current.value = 0;
+  //           break;
+
+  //         case 6:
+  //           console.log('reseteando el sat')
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
+  //           saturation(e, false)
+  //           satuRef.current.value = 0;
+  //           break;
+
+  //         case 7:
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
+  //           Sharp(e, false)
+  //           texRef.current.value = 0;
+  //           break;
+
+  //         default:
+  //           break;
+  //       }
+  //     }
+  //   }
+  //   setShowLoading(false);
+  //   return 0;
+  // }
   const reset = (UpdateFilterArray: any = true) => {
     console.log('reseteando');
     operationOrgCtx?.putImageData(imageAux, 0, 0);
@@ -161,16 +191,6 @@ const OpenCv = () => {
         if (!imageSettingsInit) {
 
           setImageSettingsInit(imageSettings)
-
-
-
-          // imageData.data.map((element: any, index: any) => {
-
-          // }
-
-
-
-
           console.log('poniendo los datos de la imagen ')
           setImageSettingsInit(imageSettings.imageData);
         }
@@ -212,12 +232,6 @@ const OpenCv = () => {
     imageSettings.greenPixelMatrix = greenPixelMatrix;
     imageSettings.bluePixelMatrix = bluePixelMatrix;
     imageSettings.alphaPixelMatrix = alphaPixelMatrix;
-
-    // listaEdicion.size += 1;
-    // listaEdicion.arregloEdicion = [...listaEdicion.arregloEdicion, {
-    //   filtro: 0,
-    //   red: redPixelMatrix, gren: greenPixelMatrix, blue: bluePixelMatrix
-    // }]
 
   }
   const expose = (e: any, update: any = true) => {
@@ -495,37 +509,44 @@ const OpenCv = () => {
   const settings = [
     {
       name: "Exposición",
+      filterName: "expose",
       reference: expoRef,
       function: expose,
 
     },
     {
       name: "Contraste",
+      filterName: "contrast",
       reference: contRef,
       function: contrast,
     },
     {
       name: "Negros",
+      filterName: "black",
       reference: blackRef,
       function: blackwhite,
     },
     {
       name: "Blancos",
+      filterName: "white",
       reference: whiteRef,
       function: blackwhite,
     },
     {
       name: "Saturación",
+      filterName: "saturation",
       reference: satuRef,
       function: saturationHandler,
     },
     {
       name: "Textura",
+      filterName: "texture",
       reference: texRef,
       function: Sharp,
     },
   ];
   function settingFilter(filter: any) {
+    console.log(filter)
     setFilterSelected(filter);
     setOpenModal(false);
   }
@@ -559,8 +580,8 @@ const OpenCv = () => {
             min={0}
             ref={filterSelected.reference}
             defaultValue={0}
-            name={'black'}
-            max={200} onChange={filterSelected.function}></input>
+            name={filterSelected.filterName.toString()}
+            max={200} onChange={filterHandler}></input>
         </IonRow>
 
       ) : (
