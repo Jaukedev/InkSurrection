@@ -1,9 +1,11 @@
-import { IonButton, IonCol, IonContent, IonRow, IonRange, IonLoading } from '@ionic/react';
+import { IonButton, IonCol, IonContent, IonRow, IonRange, IonLoading, IonIcon } from '@ionic/react';
 import { count } from 'console';
 import { truncate } from 'fs';
 import React, { useEffect, useRef, useState } from 'react'
 import { imageSettingsClass } from './Interface/InterfazOpenCv'
 import "./OpenCv.scss";
+import { barcode, save, refresh, close, arrowBack, colorFilter } from "ionicons/icons";
+
 const OpenCv = () => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,7 +22,9 @@ const OpenCv = () => {
   const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [{ filter: 0, filterAmount: 0 }] });
   const [alpha, setalpha] = useState<number>(0);
   const [showLoading, setShowLoading] = useState(false);
-
+  const [openModal, setOpenModal] = useState(false);
+  const [filterSelected, setFilterSelected] = useState({ name: "none", function: undefined, reference: undefined, filterName: 0 });
+  const [filtersValues, setFiltersValues] = useState<any>([0, 0, 0, 0, 0, 0, 0])
 
 
   enum filters {
@@ -33,76 +37,100 @@ const OpenCv = () => {
     saturation,
     texture
   }
-  const filterDefaultValues = {
-    none: 0,
-    expose: 0,
-    contrast: 0,
-    black: 0,
-    white: 0,
-    saturationG: 0,
-    saturation: 0,
-    texture: 0
-  }
-  const before = async () => {
-    let e: any = {}
-    setShowLoading(true);
-    let index = editionData.filterArray.length - 1
-    if (index > 0) {
-      console.log(editionData.filterArray)
-      let currentFilter = editionData.filterArray.pop();
-      if (index == 1) {
-        reset()
-      } else {
-
-        switch (currentFilter.filter) {
-          case 1:
-
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
-            expose(e, false);
-            e = { target: { value: 5 } }
-            saturation(e, false)
-            expoRef.current.value = 0;
-            break;
-
-          case 2:
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 4 } };
-            contrast(e, false)
-            contRef.current.value = 0;
-            break;
-
-          case 3:
-            e = { target: { value: 0, name: 'black' } }
-            blackwhite(e, false)
-            blackRef.current.value = 0;
-            break;
-
-          case 4:
-            e = { target: { value: 0, name: 'white' } }
-            blackwhite(e, false)
-            whiteRef.current.value = 0;
-            break;
-
-          case 6:
-            console.log('reseteando el sat')
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
-            saturation(e, false)
-            satuRef.current.value = 0;
-            break;
-
-          case 7:
-            editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
-            Sharp(e, false)
-            texRef.current.value = 0;
-            break;
-
-          default:
-            break;
-        }
-      }
+  const filterHandler = (e: any) => {
+    let curFil = parseInt(filters[filterSelected.filterName])
+    let filVals = filtersValues
+    filVals[curFil - 1] = e.target.value
+    console.log(filVals)
+    switch (curFil) {
+      case 1:
+        console.log(e.target.name, 'expose')
+        expose(e);
+        break;
+      case 2:
+        console.log(e.target.name, 'contrast')
+        contrast(e);
+        break;
+      case 3:
+      case 4:
+        console.log(e.target.name, 'blackwhite')
+        blackwhite(e);
+        break;
+      case 6:
+        console.log(e.target.name, 'saturation')
+        saturation(e);
+        break;
+      case 7:
+        console.log(e.target.name, 'Sharp')
+        Sharp(e);
+        break;
+      default:
+        break;
     }
-    setShowLoading(false);
-    return 0;
   }
+  // const before = async () => {
+  //   let e: any = {}
+  //   setShowLoading(true);
+  //   let index = editionData.filterArray.length - 1
+  //   if (index > 0) {
+  //     console.log(editionData.filterArray)
+  //     let currentFilter = editionData.filterArray.pop();
+  //     if (index == 1) {
+  //       reset()
+  //     } else {
+  //       let fils = { ...filtersValues}
+  //       fils[currentFilter.filter + 1] = currentFilter.filterAmount
+  //       setFiltersValues(fils)
+  //       console.log(filtersValues[currentFilter.filter] )
+  //       switch (currentFilter.filter) {
+  //         case 1:
+
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
+  //           expose(e, false);
+  //           e = { target: { value: 5 } }
+  //           saturation(e, false)
+  //           expoRef.current.value = 0;
+  //           break;
+
+  //         case 2:
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 4 } };
+  //           contrast(e, false)
+  //           contRef.current.value = 0;
+  //           break;
+
+  //         case 3:
+  //           e = { target: { value: 0, name: 'black' } }
+  //           blackwhite(e, false)
+  //           blackRef.current.value = 0;
+  //           break;
+
+  //         case 4:
+  //           e = { target: { value: 0, name: 'white' } }
+  //           blackwhite(e, false)
+  //           whiteRef.current.value = 0;
+  //           break;
+
+  //         case 6:
+  //           console.log('reseteando el sat')
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
+  //           saturation(e, false)
+  //           satuRef.current.value = 0;
+  //           break;
+
+  //         case 7:
+  //           editionData.filterSelected == currentFilter.filter ? e = { target: { value: 0 } } : e = { target: { value: -currentFilter.filterAmount / 2 } };
+  //           Sharp(e, false)
+  //           texRef.current.value = 0;
+  //           break;
+
+  //         default:
+  //           break;
+  //       }
+  //     }
+  //   }
+  //   setShowLoading(false);
+  //   return 0;
+  // }
   const reset = (UpdateFilterArray: any = true) => {
     console.log('reseteando');
     operationOrgCtx?.putImageData(imageAux, 0, 0);
@@ -163,16 +191,6 @@ const OpenCv = () => {
         if (!imageSettingsInit) {
 
           setImageSettingsInit(imageSettings)
-
-
-
-          // imageData.data.map((element: any, index: any) => {
-
-          // }
-
-
-
-
           console.log('poniendo los datos de la imagen ')
           setImageSettingsInit(imageSettings.imageData);
         }
@@ -214,12 +232,6 @@ const OpenCv = () => {
     imageSettings.greenPixelMatrix = greenPixelMatrix;
     imageSettings.bluePixelMatrix = bluePixelMatrix;
     imageSettings.alphaPixelMatrix = alphaPixelMatrix;
-
-    // listaEdicion.size += 1;
-    // listaEdicion.arregloEdicion = [...listaEdicion.arregloEdicion, {
-    //   filtro: 0,
-    //   red: redPixelMatrix, gren: greenPixelMatrix, blue: bluePixelMatrix
-    // }]
 
   }
   const expose = (e: any, update: any = true) => {
@@ -368,7 +380,7 @@ const OpenCv = () => {
 
   }
   const saturationHandler = (e: any, update: any = true) => {
-    let newE = { target: { value: 0 } } ;
+    let newE = { target: { value: 0 } };
     newE.target.value = Math.abs(e.target.value);
     e.target.value < 0 ? grayScale(newE, update) : saturation(newE, update);
   }
@@ -494,74 +506,162 @@ const OpenCv = () => {
     putImage();
   }, [operationOrgCtx])
 
+  const settings = [
+    {
+      name: "Exposición",
+      filterName: "expose",
+      reference: expoRef,
+      function: expose,
+
+    },
+    {
+      name: "Contraste",
+      filterName: "contrast",
+      reference: contRef,
+      function: contrast,
+    },
+    {
+      name: "Negros",
+      filterName: "black",
+      reference: blackRef,
+      function: blackwhite,
+    },
+    {
+      name: "Blancos",
+      filterName: "white",
+      reference: whiteRef,
+      function: blackwhite,
+    },
+    {
+      name: "Saturación",
+      filterName: "saturation",
+      reference: satuRef,
+      function: saturationHandler,
+    },
+    {
+      name: "Textura",
+      filterName: "texture",
+      reference: texRef,
+      function: Sharp,
+    },
+  ];
+  function settingFilter(filter: any) {
+    console.log(filter)
+    setFilterSelected(filter);
+    setOpenModal(false);
+  }
+
   return (
-    <>
-      <IonContent className='container' >
+    <IonContent className="container">
+      <div className="header">
+        <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
+          <IonIcon className="icon" icon={arrowBack} size="large" ></IonIcon>
+        </IonButton>
 
-        <IonRow >
-          <IonCol className='canvas-container'>
-            <canvas ref={canvasRef}>
-            </canvas>
-          </IonCol>
-          <IonLoading
-            isOpen={showLoading}
-            onDidDismiss={() => setShowLoading(false)}
-            message={'Cargando...'}
-          />
-          <div>
+        <label className="tittle">Editar Imagen</label>
+        <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
+          <IonIcon className="icon" icon={save} size="medium" ></IonIcon>
+        </IonButton>
+      </div>
+      <div className="canvas-container">
+        <canvas ref={canvasRef}>
+        </canvas>
+      </div>
 
-            <IonButton onClick={before}>
-              retroceder
-            </IonButton>
-            {/* falta una key parece, solo se ejecuta una vez */}
-            <IonButton defaultValue={'black'} onClick={reset} key={alpha} >
-              reset
-            </IonButton>
+      {filterSelected.name !== "none" ? (
+        <IonRow className="setting" key={filterSelected.name}>
+          <div className="filterValues">
+            <span className="filterName">
+              {filterSelected.name}
+            </span>
+            <span className="filterValue"></span>
           </div>
-          <br />
-          <div>
-            exposición
-            <input type='range' step={1}
-              ref={expoRef}
-              min={0}
-              defaultValue={0}
-              max={100} onChange={expose}></input>
-            contraste
-            <input type='range' step={1}
-              ref={contRef}
-              min={-100}
-              defaultValue={0}
-              max={100} onChange={contrast}></input>
-            black
-            <input type='range' step={1}
-              min={0}
-              ref={blackRef}
-              defaultValue={0}
-              name={'black'}
-              max={200} onChange={blackwhite}></input>
-            withe
-            <input type='range' step={1}
-              min={0}
-              ref={whiteRef}
-              name={'white'}
-              max={200} onChange={blackwhite}></input>
-            saturation 
-            <input type='range' step={1}
-              min={-100}
-              ref={satuRef}
-              defaultValue={0}
-              max={100} onChange={saturationHandler}></input>
-            textura
-            <input type='range' step={1}
-              min={0}
-              ref={texRef}
-              defaultValue={0}
-              max={100} onChange={Sharp}></input>
-          </div>
+          <input type='range' step={1}
+            min={0}
+            ref={filterSelected.reference}
+            defaultValue={0}
+            name={filterSelected.filterName.toString()}
+            max={200} onChange={filterHandler}></input>
         </IonRow>
 
-      </IonContent>
-    </>
+      ) : (
+        <div className="selectFilterPlease">
+          <span>Selecciona un filtro <br></br> para comenzar a editar</span>
+        </div>
+      )}
+      <div className='footer'>
+        <div className={`filter ${openModal ? "opened" : "closed"}`}>
+          {openModal ? <div></div> :
+            <div className="buttonBox">
+              <IonButton className="buttonFilter" fill="clear" onClick={() => setOpenModal(true)}>
+                <IonIcon icon={colorFilter} size="large" style={{ color: '#F4C53A' }}></IonIcon>
+              </IonButton>
+            </div>
+          }
+
+          <div className="modalContainer" >
+            <div className="modal">
+              <div className="modalHeader">
+                <div>
+                  <IonIcon
+                    icon={refresh}
+                    size="large"
+                    defaultValue={'black'} key={alpha}
+                    onClick={reset}
+                  ></IonIcon>
+                </div>
+                <label className="filterName">Filtros</label>
+                <div>
+                  <IonIcon
+                    icon={close}
+                    size="large"
+                    onClick={() => setOpenModal(false)}
+                  ></IonIcon>
+                </div>
+              </div>
+
+              {settings.map(function (setting: any, index: number) {
+                return (
+                  <IonRow className="filter-container" key={setting.name}>
+                    <div className="caption">
+                      <div className="texts">
+                        <label className="tittle">
+                          {setting.name}
+                        </label>
+                        <span className="value">{filtersValues[index]}</span>
+                      </div>
+
+                      <IonButton
+                        className="button-fil buttonSelect"
+                        shape="round"
+                        color="#dca301"
+                        fill="outline"
+                        size="small"
+                        onClick={() =>
+                          settingFilter(setting)
+                        }
+                      >
+                        Usar
+                      </IonButton>
+                    </div>
+                    <div className="range">
+                      <input type='range' step={1}
+                        min={0}
+                        ref={setting.reference}
+                        defaultValue={0}
+                        max={100} onChange={setting.function}></input>
+                    </div>
+
+                  </IonRow>
+                );
+              })}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </IonContent>
   )
 }
 
