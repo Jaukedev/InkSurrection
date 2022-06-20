@@ -11,7 +11,6 @@ const OpenCv = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     saluda: (e: any) => {
       filterSelected.filterName = e.target.name;
-      console.log(filterSelected);
       filterHandler(e);
     }
   }));

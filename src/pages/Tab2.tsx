@@ -66,8 +66,7 @@ const Tab2: React.FC = () => {
     filter.preventDefault()
     setFilterSelected(filter)
     if(filterRef.current){
-      console.log(filterRef.current.saluda(filter))
-
+      filterRef.current.saluda(filter)
     }
   }
   return (
