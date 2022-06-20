@@ -45,7 +45,7 @@ function SettingsFuntional(props) {
             step="1"
             min="0"
             max="200"
-            id={setting.name}
+          
             onChange={onChange}
             value={setting.value}
             disabled
