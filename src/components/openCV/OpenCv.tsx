@@ -1,13 +1,20 @@
 import { IonButton, IonCol, IonContent, IonRow, IonRange, IonLoading, IonIcon } from '@ionic/react';
 import { count } from 'console';
 import { truncate } from 'fs';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react'
+
 import { imageSettingsClass } from './Interface/InterfazOpenCv'
 import "./OpenCv.scss";
 import { barcode, save, refresh, close, arrowBack, colorFilter } from "ionicons/icons";
 
-const OpenCv = () => {
-
+const OpenCv = forwardRef((props, ref) => {
+  useImperativeHandle(ref, () => ({
+    saluda: (e: any) => {
+      filterSelected.filterName = e.target.name;
+      console.log(filterSelected);
+      filterHandler(e);
+    }
+  }));
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const expoRef = useRef<any>(null);
   const contRef = useRef<any>(null);
@@ -504,6 +511,7 @@ const OpenCv = () => {
   useEffect(() => {
 
     putImage();
+
   }, [operationOrgCtx])
 
   const settings = [
@@ -551,118 +559,120 @@ const OpenCv = () => {
     setOpenModal(false);
   }
 
-  return (
-    <IonContent className="container">
-      <div className="header">
-        <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
-          <IonIcon className="icon" icon={arrowBack} size="large" ></IonIcon>
-        </IonButton>
+  return (<>       <div className="canvas-container">
+    <canvas ref={canvasRef}>
+    </canvas>
+  </div> </>
+    //     <IonContent className="container">
+    //       <div className="header">
+    //         <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
+    //           <IonIcon className="icon" icon={arrowBack} size="large" ></IonIcon>
+    //         </IonButton>
 
-        <label className="tittle">Editar Imagen</label>
-        <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
-          <IonIcon className="icon" icon={save} size="medium" ></IonIcon>
-        </IonButton>
-      </div>
-      <div className="canvas-container">
-        <canvas ref={canvasRef}>
-        </canvas>
-      </div>
+    //         <label className="tittle">Editar Imagen</label>
+    //         <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
+    //           <IonIcon className="icon" icon={save} size="medium" ></IonIcon>
+    //         </IonButton>
+    //       </div>
+    //       <div className="canvas-container">
+    //         <canvas ref={canvasRef}>
+    //         </canvas>
+    //       </div>
+    // {/* 
+    //       {filterSelected.name !== "none" ? (
+    //         <IonRow className="setting" key={filterSelected.name}>
+    //           <div className="filterValues">
+    //             <span className="filterName">
+    //               {filterSelected.name}
+    //             </span>
+    //             <span className="filterValue"></span>
+    //           </div>
+    //           <input type='range' step={1}
+    //             min={0}
+    //             ref={filterSelected.reference}
+    //             value={filtersValues[0]}
+    //             name={filterSelected.filterName.toString()}
+    //             max={200} onChange={filterHandler}></input>
+    //         </IonRow>
 
-      {filterSelected.name !== "none" ? (
-        <IonRow className="setting" key={filterSelected.name}>
-          <div className="filterValues">
-            <span className="filterName">
-              {filterSelected.name}
-            </span>
-            <span className="filterValue"></span>
-          </div>
-          <input type='range' step={1}
-            min={0}
-            ref={filterSelected.reference}
-            defaultValue={0}
-            name={filterSelected.filterName.toString()}
-            max={200} onChange={filterHandler}></input>
-        </IonRow>
+    //       ) : (
+    //         <div className="selectFilterPlease">
+    //           <span>Selecciona un filtro <br></br> para comenzar a editar</span>
+    //         </div>
+    //       )} */}
+    //       {/* <div className='footer'>
+    //         <div className={`filter ${openModal ? "opened" : "closed"}`}>
+    //           {openModal ? <div></div> :
+    //             <div className="buttonBox">
+    //               <IonButton className="buttonFilter" fill="clear" onClick={() => setOpenModal(true)}>
+    //                 <IonIcon icon={colorFilter} size="large" style={{ color: '#F4C53A' }}></IonIcon>
+    //               </IonButton>
+    //             </div>
+    //           }
 
-      ) : (
-        <div className="selectFilterPlease">
-          <span>Selecciona un filtro <br></br> para comenzar a editar</span>
-        </div>
-      )}
-      <div className='footer'>
-        <div className={`filter ${openModal ? "opened" : "closed"}`}>
-          {openModal ? <div></div> :
-            <div className="buttonBox">
-              <IonButton className="buttonFilter" fill="clear" onClick={() => setOpenModal(true)}>
-                <IonIcon icon={colorFilter} size="large" style={{ color: '#F4C53A' }}></IonIcon>
-              </IonButton>
-            </div>
-          }
+    //           <div className="modalContainer" >
+    //             <div className="modal">
+    //               <div className="modalHeader">
+    //                 <div>
+    //                   <IonIcon
+    //                     icon={refresh}
+    //                     size="large"
+    //                     defaultValue={'black'} key={alpha}
+    //                     onClick={reset}
+    //                   ></IonIcon>
+    //                 </div>
+    //                 <label className="filterName">Filtros</label>
+    //                 <div>
+    //                   <IonIcon
+    //                     icon={close}
+    //                     size="large"
+    //                     onClick={() => setOpenModal(false)}
+    //                   ></IonIcon>
+    //                 </div>
+    //               </div>
 
-          <div className="modalContainer" >
-            <div className="modal">
-              <div className="modalHeader">
-                <div>
-                  <IonIcon
-                    icon={refresh}
-                    size="large"
-                    defaultValue={'black'} key={alpha}
-                    onClick={reset}
-                  ></IonIcon>
-                </div>
-                <label className="filterName">Filtros</label>
-                <div>
-                  <IonIcon
-                    icon={close}
-                    size="large"
-                    onClick={() => setOpenModal(false)}
-                  ></IonIcon>
-                </div>
-              </div>
+    //               {settings.map(function (setting: any, index: number) {
+    //                 return (
+    //                   <IonRow className="filter-container" key={setting.name}>
+    //                     <div className="caption">
+    //                       <div className="texts">
+    //                         <label className="tittle">
+    //                           {setting.name}
+    //                         </label>
+    //                         <span className="value">{filtersValues[index]}</span>
+    //                       </div>
 
-              {settings.map(function (setting: any, index: number) {
-                return (
-                  <IonRow className="filter-container" key={setting.name}>
-                    <div className="caption">
-                      <div className="texts">
-                        <label className="tittle">
-                          {setting.name}
-                        </label>
-                        <span className="value">{filtersValues[index]}</span>
-                      </div>
+    //                       <IonButton
+    //                         className="button-fil buttonSelect"
+    //                         shape="round"
+    //                         color="#dca301"
+    //                         fill="outline"
+    //                         size="small"
+    //                         onClick={() =>
+    //                           settingFilter(setting)
+    //                         }
+    //                       >
+    //                         Usar
+    //                       </IonButton>
+    //                     </div>
+    //                     <div className="range">
+    //                       <input type='range' step={1}
+    //                         min={0}
+    //                         defaultValue={0}
+    //                         max={100} onChange={setting.function}></input>
+    //                     </div>
 
-                      <IonButton
-                        className="button-fil buttonSelect"
-                        shape="round"
-                        color="#dca301"
-                        fill="outline"
-                        size="small"
-                        onClick={() =>
-                          settingFilter(setting)
-                        }
-                      >
-                        Usar
-                      </IonButton>
-                    </div>
-                    <div className="range">
-                      <input type='range' step={1}
-                        min={0}
-                        ref={setting.reference}
-                        defaultValue={0}
-                        max={100} onChange={setting.function}></input>
-                    </div>
+    //                   </IonRow>
+    //                 );
+    //               })}
 
-                  </IonRow>
-                );
-              })}
+    //             </div>
+    //           </div>
+    //         </div>
+    //       </div> */}
 
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </IonContent>
+    //     </IonContent>
   )
-}
+})
 
 export default OpenCv
