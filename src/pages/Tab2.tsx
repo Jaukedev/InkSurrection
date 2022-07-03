@@ -2,16 +2,25 @@ import { IonButton, IonPage, IonContent, IonRow, IonRange, IonLoading, IonIcon }
 import React, { useState, createContext, useEffect, useContext, useRef } from 'react';
 import ExploreContainer from '../components/ExploreContainer';
 import './Tab2.scss';
+import AndroideCV from '../components/androideCV/AndroideCV';
 import OpenCv from '../components/openCV/OpenCv';
 import { barcode, save, refresh, close, arrowBack, colorFilter } from "ionicons/icons";
 import { ImageContext } from '../context/imageContext';
 
+
 const Tab2: React.FC = () => {
   const filterRef = useRef<any>();
+  const expoRef = useRef<any>(null);
+  const contRef = useRef<any>(null);
+  const blackRef = useRef<any>(null);
+  const whiteRef = useRef<any>(null);
+  const satuRef = useRef<any>(null);
+  const texRef = useRef<any>(null);
   const [openModal, setOpenModal] = useState(false);
   const [settings, setSettings] = useState<any>([{
     name: "Exposición",
     filterName: "expose",
+    reference: expoRef,
     amount: 0,
     index: 0,
 
@@ -19,30 +28,35 @@ const Tab2: React.FC = () => {
   {
     name: "Contraste",
     filterName: "contrast",
+    reference: contRef,
     amount: 0,
     index: 1,
   },
   {
     name: "Negros",
     filterName: "black",
+    reference: blackRef,
     amount: 0,
     index: 2,
   },
   {
     name: "Blancos",
     filterName: "white",
+    reference: whiteRef,
     amount: 0,
     index: 3,
   },
   {
     name: "Saturación",
     filterName: "saturation",
+    reference: satuRef,
     amount: 0,
     index: 4,
   },
   {
     name: "Textura",
     filterName: "texture",
+    reference: texRef,
     amount: 0,
     index: 5,
   },])
@@ -53,21 +67,28 @@ const Tab2: React.FC = () => {
     index: 0,
   });
   const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [{ filter: 0, filterAmount: 0 }] });
+
   function settingFilter(filter: any) {
     let found:any;
     let settingsAux:any;
     filter.preventDefault()
     found = settings.find((element: any) => element.filterName == filter.target.name);
-    console.log(filter.target.name);
     settingsAux = settings;
     settingsAux[found.index].amount = filter.target.value;
-    console.log(settingsAux);
     setSettings(settingsAux)
     filter.preventDefault()
     setFilterSelected(filter)
     if(filterRef.current){
       filterRef.current.saluda(filter)
     }
+  }
+  const disableRange = () => {
+    expoRef.current.disebled = true;
+    contRef.current.disebled = true;
+    blackRef.current.disebled = true;
+    whiteRef.current.disebled = true;
+    satuRef.current.disebled = true;
+    texRef.current.disebled = true;
   }
   return (
     <IonPage>
@@ -83,7 +104,8 @@ const Tab2: React.FC = () => {
           </IonButton>
         </div>
 
-        <OpenCv ref={filterRef}></OpenCv> 
+        {/* <OpenCv ref={filterRef} disbleRange={disableRange}></OpenCv>  */}
+        <AndroideCV ref={filterRef} disbleRange={disableRange} ></AndroideCV> 
 
         {filterSelected.name !== "none" ? (
 
@@ -101,6 +123,7 @@ const Tab2: React.FC = () => {
                 <div className="range">
                   <input type='range' step={1}
                     min={0}
+                    ref={setting.reference}
                     name={setting.filterName}
                     value={setting.amount}
                     onChange={settingFilter}
