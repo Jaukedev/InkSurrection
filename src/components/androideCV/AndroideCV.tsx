@@ -12,13 +12,12 @@ const AndroideCV = forwardRef((props: any, ref) => {
   }));
   const [imageCurr, setImageCurr] = useState<HTMLImageElement>()
   const [imageCurrData, setImageCurrData] = useState<any>()
-  const [filters, setFilters] = useState<any>([{ key: 'contrast', value: 100 }, { key: 'saturate', value: 100 }, { key: 'brightness', value: 100 }, { key: 'grayscale', value: 0 }])
   const [imageR, setImageR] = useState<any[][]>([])
   const [imageG, setImageG] = useState<any[][]>([])
   const [imageB, setImageB] = useState<any[][]>([])
   const [imageA, setImageA] = useState<any[][]>([])
   const [imageIni, setImageIni] = useState<HTMLImageElement | null>(null)
-  const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor:0 }, { key: 'sharp', value: [], factor:0 }, { key: 'expose', value: [], factor:0 }, { key: 'constrast', value: [], factor:0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
+  const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor: 0 }, { key: 'sharp', value: [], factor: 0 }, { key: 'expose', value: [], factor: 0 }, { key: 'constrast', value: [], factor: 0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
   const [loading, setloading] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -67,43 +66,45 @@ const AndroideCV = forwardRef((props: any, ref) => {
     generatePixelMatrix();
   }, [imageCurrData])
   useEffect(() => {
-    if (imageArray[imageArray.length-1].value) {
+    if (imageArray[imageArray.length - 1].value) {
       console.log('✔️ Se completa el image array')
       console.log(imageArray)
-    //   //! aca tengo que cargar las matrices 
-    //   // siempre que se cambie el slider se hace esto mismo
-    //   let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
-    //   let intResult: any = []
+      //   //! aca tengo que cargar las matrices 
+      //   // siempre que se cambie el slider se hace esto mismo
+      //   let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
+      //   let intResult: any = []
 
-    //   let m1 = matrix(imageArray[0].value)
-    //   let m2 = matrix(imageArray[1].value)
+      //   let m1 = matrix(imageArray[0].value)
+      //   let m2 = matrix(imageArray[1].value)
 
-    //   let alpha = 0.8
-    //   m1.resize(size(m2))
-    //   let resultA = multiply(m1, 1 - alpha)
-    //   let resultB = multiply(m2, alpha)
-    //   let result = add(resultA, resultB)
+      //   let alpha = 0.8
+      //   m1.resize(size(m2))
+      //   let resultA = multiply(m1, 1 - alpha)
+      //   let resultB = multiply(m2, alpha)
+      //   let result = add(resultA, resultB)
 
-    //   result.map((value, index) => {
-    //     intResult.push(parseInt(value))
-    //     imageCurrData.data[index] = parseInt(value)
-    //   })
+      //   result.map((value, index) => {
+      //     intResult.push(parseInt(value))
+      //     imageCurrData.data[index] = parseInt(value)
+      //   })
 
-    //   console.log('filtros Cargados')
-    //   setloading(false);
-    //   ctx?.putImageData(imageCurrData, 0, 0);
+      //   console.log('filtros Cargados')
+      //   setloading(false);
+      //   ctx?.putImageData(imageCurrData, 0, 0);
 
     }
   }, [imageArray])
 
   useEffect(() => {
-    if(imageR && imageCurr){ 
+    if (imageR && imageCurr) {
       console.log('⚒️ se crean filtros');
 
       Sharp({ target: { value: 50 } });
       expose({ target: { value: 50 } });
+      contrast({ target: { value: 50 } });
+
     }
-    
+
   }, [imageR])
 
 
@@ -120,19 +121,19 @@ const AndroideCV = forwardRef((props: any, ref) => {
       [-1, -1, -1],
       [-1, 9, -1],
       [-1, -1, -1]
-    ], value, 0,'sharp');
+    ], value, 0, 'sharp');
 
   }
   const expose = (e: any, update: any = true) => {
 
 
-      let value = parseInt(e.target.value) / 100;
+    let value = parseInt(e.target.value) / 100;
 
-      applyFilterII([
-        [1, 0, 0],
-        [0, 1, 0],
-        [0, 0, 1]
-      ],value,0,'expose' );
+    applyFilterII([
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1]
+    ], value, 0, 'expose');
 
 
   }
@@ -149,23 +150,23 @@ const AndroideCV = forwardRef((props: any, ref) => {
     // let pos = 0;
     // let factor: any;
     // e.target.value > 0 ? factor = parseInt(e.target.value) / 100 : factor = parseInt(e.target.value) / -100;
-
+    let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
+    let pos = 0;
+    let newA: any = [];
     imageR.map((rowValue: any, i: number) => {
       if (imageCurrData && imageCurr) {
-        let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
-        let pos = 0;
-        let newA: any = [];
+
         rowValue.map((colValue: any, j: number) => {
           let newRed = 0, newGreen = 0, newBlue = 0, newAlpha = 0;
-  
+
           newRed = Math.round(alpha * (imageR[i][j] - u) + u);
           newGreen = Math.round(alpha * (imageG[i][j] - u) + u);
           newBlue = Math.round(alpha * (imageB[i][j] - u) + u);
           newAlpha = imageA[i][j];
-  
+
           pos = i * imageCurr.width + j;
-  
-  
+
+
           newA[pos * 4] = Math.round(newRed);
           newA[pos * 4 + 1] = Math.round(newGreen);
           newA[pos * 4 + 2] = Math.round(newBlue);
@@ -173,33 +174,45 @@ const AndroideCV = forwardRef((props: any, ref) => {
         })
       }
     })
+    imageArray[3].value = newA
     // operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
 
 
   }
-  const filtering = (value: any,name: any)=>{
+  const filtering = (value: any, name: any) => {
+    value = parseInt(value) / 100
+    switch (name) {
+      case 'sharp':
+        imageArray[1].factor = value;
+        break;
+      case 'expose':
+        imageArray[2].factor = value;
+        break;
+      case 'contrast':
+        imageArray[3].factor = value;
+        break;
+      default:
+        break;
+    }
+    putNewImage()
+
+  }
+  const putNewImage = () => {
     if (imageArray.length == 4) {
-      console.log('✔️ filtering',name)
+      console.log('✔️ filtering', imageArray)
       let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
       let intResult: any = []
 
       let m1 = matrix(imageArray[0].value)
       let m2 = matrix(imageArray[1].value)
       let m3 = matrix(imageArray[2].value)
-      let alpha = 0;
-      let beta = 0;
-      if(name == 'sharp'){
-        alpha = value/100
-      }else{
-         beta = value/100
-      }
+      let m4 = matrix(imageArray[3].value)
+
       m1.resize(size(m2))
-      let resultA = multiply(m1, 1 - alpha)
-      let resultB = multiply(m2, alpha)
-      let filter1 = add(multiply(m1, 1 - alpha), multiply(m2, alpha))
-      let filter2 = add(multiply(filter1, 1 - beta), multiply(m3, beta))
-      console.log(alpha,beta,filter2);
-      filter2.map((value, index) => {
+      let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
+      let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
+      let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
+      filter3.map((value, index) => {
         imageCurrData.data[index] = parseInt(value)
       })
       // lo logre una vez lo puedo hacer otra vez
@@ -252,9 +265,9 @@ const AndroideCV = forwardRef((props: any, ref) => {
         })
       })
       // ctx?.putImageData(imageCurrData, 0, 0);
-      if(filteName == 'expose'){
+      if (filteName == 'expose') {
         imageArray[2].value = newA
-      }else{
+      } else {
         imageArray[1].value = newA
       }
       // if (!found) {
