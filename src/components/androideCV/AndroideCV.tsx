@@ -17,7 +17,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
   const [imageB, setImageB] = useState<any[][]>([])
   const [imageA, setImageA] = useState<any[][]>([])
   const [imageIni, setImageIni] = useState<HTMLImageElement | null>(null)
-  const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor: 0 }, { key: 'sharp', value: [], factor: 0 }, { key: 'expose', value: [], factor: 0 }, { key: 'constrast', value: [], factor: 0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
+  const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor: 0 }, { key: 'sharp', value: [], factor: 0 }, { key: 'expose', value: [], factor: 0 }, { key: 'constrast', value: [], factor: 0 }, { key: 'saturation', value: [], factor: 0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
   const [loading, setloading] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -102,6 +102,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
       Sharp({ target: { value: 50 } });
       expose({ target: { value: 50 } });
       contrast({ target: { value: 50 } });
+      saturation({ target: { value: 50 } });
 
     }
 
@@ -179,6 +180,42 @@ const AndroideCV = forwardRef((props: any, ref) => {
 
 
   }
+  const saturation = (e: any, update: any = true) => {
+
+    let beta = 150;
+    let sum = imageCurrData.data.reduce((previous: any, current: any) => current += previous);
+    // let u = sum / imageSettings.imageData.data.length;
+    let alpha: number;
+    beta == 255 ? alpha = 0 : alpha = (255 + beta) / (255 - beta);
+    let pos = 0;
+    let factor: any = parseInt(e.target.value) / 100;;
+    let newA: any = [];
+    if (imageCurrData && imageCurr) {
+
+      imageR.map((rowValue: any, i: number) => {
+        rowValue.map((colValue: any, j: number) => {
+          let newRed = 0, newGreen = 0, newBlue = 0, newAlpha = 0;
+          let u = (imageR[i][j] + imageG[i][j] + imageB[i][j]) / 3;
+  
+          newRed = Math.round(alpha * (imageR[i][j] - u) + u);
+          newGreen = Math.round(alpha * (imageB[i][j] - u) + u);
+          newBlue = Math.round(alpha * (imageB[i][j] - u) + u);
+          newAlpha = imageA[i][j];
+  
+          pos = i * imageCurr.width + j;
+  
+  
+          newA[pos * 4] = Math.round(newRed);
+          newA[pos * 4 + 1] = Math.round(newGreen);
+          newA[pos * 4 + 2] = Math.round(newBlue);
+          newA[pos * 4 + 3] = newAlpha;
+        })
+      })
+    }
+    imageArray[4].value = newA
+    // operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
+  }
+
   const filtering = (value: any, name: any) => {
     value = parseInt(value) / 100
     switch (name) {
@@ -191,6 +228,9 @@ const AndroideCV = forwardRef((props: any, ref) => {
       case 'contrast':
         imageArray[3].factor = value;
         break;
+      case 'saturation':
+        imageArray[4].factor = value;
+        break;
       default:
         break;
     }
@@ -198,7 +238,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
 
   }
   const putNewImage = () => {
-    if (imageArray.length == 4) {
+    if (imageArray.length == 5) {
       console.log('✔️ filtering', imageArray)
       let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
       let intResult: any = []
@@ -207,12 +247,14 @@ const AndroideCV = forwardRef((props: any, ref) => {
       let m2 = matrix(imageArray[1].value)
       let m3 = matrix(imageArray[2].value)
       let m4 = matrix(imageArray[3].value)
+      let m5 = matrix(imageArray[4].value)
 
       m1.resize(size(m2))
       let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
       let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
       let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
-      filter3.map((value, index) => {
+      let filter4 = add(multiply(filter3, 1 - imageArray[4].factor), multiply(m5, imageArray[4].factor))
+      filter4.map((value, index) => {
         imageCurrData.data[index] = parseInt(value)
       })
       // lo logre una vez lo puedo hacer otra vez
