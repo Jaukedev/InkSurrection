@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } from 'react'
-import { evaluate, matrix, multiply, size, resize, add } from 'mathjs'
+import { evaluate, matrix, multiply, size, resize, add, MathArray } from 'mathjs'
 import { cloudSharp } from 'ionicons/icons'
 import { IonLoading, } from '@ionic/react';
 
@@ -16,6 +16,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
   const [imageG, setImageG] = useState<any[][]>([])
   const [imageB, setImageB] = useState<any[][]>([])
   const [imageA, setImageA] = useState<any[][]>([])
+  // const [filtros, setfiltros] = useState(second)
   const [imageIni, setImageIni] = useState<HTMLImageElement | null>(null)
   const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor: 0 }, { key: 'sharp', value: [], factor: 0 }, { key: 'expose', value: [], factor: 0 }, { key: 'constrast', value: [], factor: 0 }, { key: 'saturation', value: [], factor: 0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
   const [loading, setloading] = useState(false)
@@ -25,7 +26,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
   // ! ahora si le puedo poner el filtro en orden a la primera imagen y no tengo que wear con las posiciones
 
   useEffect(() => {
-    // setloading(true)
+    setloading(true)
     const image = new Image();
     const imageIni = new Image();
     console.log('al inicio')
@@ -103,12 +104,15 @@ const AndroideCV = forwardRef((props: any, ref) => {
       expose({ target: { value: 50 } });
       contrast({ target: { value: 50 } });
       saturation({ target: { value: 50 } });
-
+      //TODO getFilterMatrix()
+      setloading(false)
     }
 
   }, [imageR])
 
+  const getFilterMatrix=()=>{
 
+  }
   const filterHandler = (e: any) => {
     console.log(e.target.name, e.target.value);
     filtering(e.target.value, e.target.name)
@@ -217,6 +221,8 @@ const AndroideCV = forwardRef((props: any, ref) => {
   }
 
   const filtering = (value: any, name: any) => {
+    //TODO ACA CAMBIAMOS EL FILTRO SILO QUE SE CAMBIA
+
     value = parseInt(value) / 100
     switch (name) {
       case 'sharp':
@@ -236,10 +242,13 @@ const AndroideCV = forwardRef((props: any, ref) => {
     }
     putNewImage()
 
+    // hacer asincrono con un efect
+    // o intentar hacer asincrono
+
   }
   const putNewImage = () => {
     if (imageArray.length == 5) {
-      console.log('✔️ filtering', imageArray)
+      // console.log('✔️ filtering', imageArray)
       let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
       let intResult: any = []
 
@@ -250,6 +259,8 @@ const AndroideCV = forwardRef((props: any, ref) => {
       let m5 = matrix(imageArray[4].value)
 
       m1.resize(size(m2))
+      // se debe hacer en el filtering
+
       let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
       let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
       let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
@@ -258,13 +269,51 @@ const AndroideCV = forwardRef((props: any, ref) => {
         imageCurrData.data[index] = parseInt(value)
       })
       // lo logre una vez lo puedo hacer otra vez
+      let aux2 ;
+      aux2 = new Array(filter4.toArray())
+      console.log('ya')
+      // aux2 = new 
       // let aux = filter1.toArray()
-      // let aux2 = new Array(aux)
       // let imageNew = new ImageData(aux2, imageCurr?.width, imageCurr);
       // imageNew.data = filter1
-      console.log('filtros Cargados')
+      // console.log(aux2[0])
       setloading(false);
       ctx?.putImageData(imageCurrData, 0, 0);
+    }
+  }
+  const putNewImageII = () => {
+    if (imageArray.length == 5) {
+      // console.log('✔️ filtering', imageArray)
+      let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
+      let intResult: any = []
+
+      let m1 = matrix(imageArray[0].value)
+      let m2 = matrix(imageArray[1].value)
+      let m3 = matrix(imageArray[2].value)
+      let m4 = matrix(imageArray[3].value)
+      let m5 = matrix(imageArray[4].value)
+
+      m1.resize(size(m2))
+      // se debe hacer en el filtering
+
+      let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
+      let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
+      let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
+      let filter4 = add(multiply(filter3, 1 - imageArray[4].factor), multiply(m5, imageArray[4].factor))
+      // filter4.map((value, index) => {
+      //   imageCurrData.data[index] = parseInt(value)
+      // })
+      // lo logre una vez lo puedo hacer otra vez
+      let aux2 ;
+      aux2 = new Array(filter4.toArray())
+      console.log('ya')
+      // aux2 = new 
+      // let aux = filter1.toArray()
+      // let imageNew = new ImageData(aux2, imageCurr?.width, imageCurr);
+      // imageNew.data = filter1
+      // console.log(aux2[0])
+      // setloading(false);
+      // ctx?.putImageData(imageCurrData, 0, 0);
 
     }
   }
@@ -365,7 +414,6 @@ const AndroideCV = forwardRef((props: any, ref) => {
       <canvas ref={canvasRef}></canvas>
       <IonLoading
         isOpen={loading}
-        onDidDismiss={() => setloading(false)}
         message={'Loading...'}
       />
     </>
