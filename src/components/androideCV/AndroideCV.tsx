@@ -3,6 +3,7 @@ import { evaluate, matrix, multiply, size, resize, add, MathArray } from 'mathjs
 import { cloudSharp } from 'ionicons/icons'
 import { IonLoading, } from '@ionic/react';
 
+
 const AndroideCV = forwardRef((props: any, ref) => {
   const { disbleRange } = props;
   useImperativeHandle(ref, () => ({
@@ -248,75 +249,39 @@ const AndroideCV = forwardRef((props: any, ref) => {
   }
   const putNewImage = () => {
     if (imageArray.length == 5) {
-      // console.log('✔️ filtering', imageArray)
       let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
-      let intResult: any = []
 
-      let m1 = matrix(imageArray[0].value)
-      let m2 = matrix(imageArray[1].value)
-      let m3 = matrix(imageArray[2].value)
-      let m4 = matrix(imageArray[3].value)
-      let m5 = matrix(imageArray[4].value)
+      let m1 = imageArray[0].value
+      let m2 = imageArray[1].value
+      let m3 = imageArray[2].value
+      let m4 = imageArray[3].value
+      let m5 = imageArray[4].value
 
-      m1.resize(size(m2))
-      // se debe hacer en el filtering
+      m1 = resize(m1,size(m2))
 
       let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
       let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
       let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
       let filter4 = add(multiply(filter3, 1 - imageArray[4].factor), multiply(m5, imageArray[4].factor))
-      filter4.map((value, index) => {
+      filter4.map((value:any, index:any) => {
         imageCurrData.data[index] = parseInt(value)
       })
       // lo logre una vez lo puedo hacer otra vez
-      let aux2 ;
-      aux2 = new Array(filter4.toArray())
-      console.log('ya')
+      // let aux2 ;
+      // aux2 = new Uint8ClampedArray(filter4)
+      // let objCopy = { ...imageCurrData }
+      // objCopy.data = aux2;
+      // objCopy = new ImageData(objCopy, filter4.width)
       // aux2 = new 
       // let aux = filter1.toArray()
-      // let imageNew = new ImageData(aux2, imageCurr?.width, imageCurr);
+      // let imageNew = new ImageData(filter4, filter4.width);
       // imageNew.data = filter1
       // console.log(aux2[0])
       setloading(false);
       ctx?.putImageData(imageCurrData, 0, 0);
     }
   }
-  const putNewImageII = () => {
-    if (imageArray.length == 5) {
-      // console.log('✔️ filtering', imageArray)
-      let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
-      let intResult: any = []
 
-      let m1 = matrix(imageArray[0].value)
-      let m2 = matrix(imageArray[1].value)
-      let m3 = matrix(imageArray[2].value)
-      let m4 = matrix(imageArray[3].value)
-      let m5 = matrix(imageArray[4].value)
-
-      m1.resize(size(m2))
-      // se debe hacer en el filtering
-
-      let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
-      let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
-      let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
-      let filter4 = add(multiply(filter3, 1 - imageArray[4].factor), multiply(m5, imageArray[4].factor))
-      // filter4.map((value, index) => {
-      //   imageCurrData.data[index] = parseInt(value)
-      // })
-      // lo logre una vez lo puedo hacer otra vez
-      let aux2 ;
-      aux2 = new Array(filter4.toArray())
-      console.log('ya')
-      // aux2 = new 
-      // let aux = filter1.toArray()
-      // let imageNew = new ImageData(aux2, imageCurr?.width, imageCurr);
-      // imageNew.data = filter1
-      // console.log(aux2[0])
-      // setloading(false);
-      // ctx?.putImageData(imageCurrData, 0, 0);
-
-    }
-  }
   const applyFilterII = (filter: any, factor: any = 1, key = 0, filteName: string) => {
     let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
     let pos = 0;

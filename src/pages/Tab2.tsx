@@ -140,6 +140,7 @@ const Tab2: React.FC = () => {
                     name={setting.filterName}
                     // value={setting.amount}
                     onChange={settingFilter}
+                    disabled ={loading}
                     max={100} ></input>
                 </div>
 
