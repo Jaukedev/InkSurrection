@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useEffect, useRef, useState } f
 import { evaluate, matrix, multiply, size, resize, add, MathArray } from 'mathjs'
 import { cloudSharp } from 'ionicons/icons'
 import { IonLoading, } from '@ionic/react';
-
+import "./OpenCv.scss";
 
 const AndroideCV = forwardRef((props: any, ref) => {
   const { disbleRange } = props;
@@ -19,7 +19,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
   const [imageA, setImageA] = useState<any[][]>([])
   // const [filtros, setfiltros] = useState(second)
   const [imageIni, setImageIni] = useState<HTMLImageElement | null>(null)
-  const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor: 0 }, { key: 'sharp', value: [], factor: 0 }, { key: 'expose', value: [], factor: 0 }, { key: 'constrast', value: [], factor: 0 }, { key: 'saturation', value: [], factor: 0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
+  const [imageArray, setImageArray] = useState<any>([{ key: 'inicial', value: [], factor: 0 }, { key: 'sharp', value: [], factor: 0 }, { key: 'expose', value: [], factor: 0 }, { key: 'constrast', value: [], factor: 0 }, { key: 'saturation', value: [], factor: 0 }, { key: 'white', value: [], factor: 0 }, { key: 'black', value: [], factor: 0 }])// podria ser un arreglo de el filtro, la cantidad y la imagen
   const [loading, setloading] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -101,17 +101,19 @@ const AndroideCV = forwardRef((props: any, ref) => {
     if (imageR && imageCurr) {
       console.log('⚒️ se crean filtros');
 
-      Sharp({ target: { value: 50 } });
-      expose({ target: { value: 50 } });
+      Sharp({ target: { value: 100 } });
+      expose({ target: { value: 15 } });
       contrast({ target: { value: 50 } });
-      saturation({ target: { value: 50 } });
+      saturation({ target: { value: 30 } });
+      blackwhite({ target: { value: 30, name: 'black' } });
+      blackwhite({ target: { value: 30, name: 'white' } });
       //TODO getFilterMatrix()
       setloading(false)
     }
 
   }, [imageR])
 
-  const getFilterMatrix=()=>{
+  const getFilterMatrix = () => {
 
   }
   const filterHandler = (e: any) => {
@@ -181,19 +183,15 @@ const AndroideCV = forwardRef((props: any, ref) => {
       }
     })
     imageArray[3].value = newA
-    // operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
-
-
   }
   const saturation = (e: any, update: any = true) => {
-
     let beta = 150;
     let sum = imageCurrData.data.reduce((previous: any, current: any) => current += previous);
     // let u = sum / imageSettings.imageData.data.length;
     let alpha: number;
     beta == 255 ? alpha = 0 : alpha = (255 + beta) / (255 - beta);
     let pos = 0;
-    let factor: any = parseInt(e.target.value) / 100;;
+    // let factor: any = parseInt(e.target.value) / 100;;
     let newA: any = [];
     if (imageCurrData && imageCurr) {
 
@@ -201,15 +199,15 @@ const AndroideCV = forwardRef((props: any, ref) => {
         rowValue.map((colValue: any, j: number) => {
           let newRed = 0, newGreen = 0, newBlue = 0, newAlpha = 0;
           let u = (imageR[i][j] + imageG[i][j] + imageB[i][j]) / 3;
-  
+
           newRed = Math.round(alpha * (imageR[i][j] - u) + u);
           newGreen = Math.round(alpha * (imageB[i][j] - u) + u);
           newBlue = Math.round(alpha * (imageB[i][j] - u) + u);
           newAlpha = imageA[i][j];
-  
+
           pos = i * imageCurr.width + j;
-  
-  
+
+
           newA[pos * 4] = Math.round(newRed);
           newA[pos * 4 + 1] = Math.round(newGreen);
           newA[pos * 4 + 2] = Math.round(newBlue);
@@ -218,15 +216,58 @@ const AndroideCV = forwardRef((props: any, ref) => {
       })
     }
     imageArray[4].value = newA
-    // operationOrgCtx?.putImageData(imageSettings.imageData, 0, 0);
   }
+  const blackwhite = (e: any, update: any = true) => {
 
+    let newA: any = [];
+    // let factor = parseInt(e.target.value) / 100
+    let pos = 0;
+    let condition;
+    let fact;
+
+    if (imageCurrData && imageCurr) {
+      imageR.map((rowValue: any, i: number) => {
+        rowValue.map((colValue: any, j: number) => {
+          let newRed = 0, newGreen = 0, newBlue = 0, newAlpha = 0;
+          let u = (imageR[i][j] + imageG[i][j] + imageB[i][j]) / 3;
+          let value;
+          var sum = (imageR[i][j] +
+            imageG[i][j] +
+            imageB[i][j] / 3);
+          pos = i * imageCurr.width + j;
+
+          e.target.name == 'black' ? condition = sum < 99 : condition = sum > 200;
+          e.target.name == 'black' ? fact = -1 : fact = 1;
+          newRed = imageR[i][j];
+          newGreen = imageG[i][j];
+          newBlue = imageB[i][j];
+          newAlpha = imageA[i][j];
+
+          if (condition) { //! esta condicion tiene que ser en base a la imagen original
+
+            newRed = imageR[i][j] + 30 * fact;
+            newGreen = imageG[i][j] + 30 * fact;
+            newBlue = imageB[i][j] + 30 * fact;
+            newAlpha = imageA[i][j];
+
+          }
+          newA[pos * 4] = Math.round(newRed);
+          newA[pos * 4 + 1] = Math.round(newGreen);
+          newA[pos * 4 + 2] = Math.round(newBlue);
+          newA[pos * 4 + 3] = newAlpha;
+        })
+      })
+      e.target.name == 'black' ? imageArray[6].value = newA : imageArray[5].value = newA
+
+    }
+
+  }
   const filtering = (value: any, name: any) => {
     //TODO ACA CAMBIAMOS EL FILTRO SILO QUE SE CAMBIA
 
     value = parseInt(value) / 100
     switch (name) {
-      case 'sharp':
+      case 'texture':
         imageArray[1].factor = value;
         break;
       case 'expose':
@@ -238,6 +279,12 @@ const AndroideCV = forwardRef((props: any, ref) => {
       case 'saturation':
         imageArray[4].factor = value;
         break;
+      case 'black':
+        imageArray[6].factor = value;
+        break;
+      case 'white':
+        imageArray[5].factor = value;
+        break;
       default:
         break;
     }
@@ -248,24 +295,26 @@ const AndroideCV = forwardRef((props: any, ref) => {
 
   }
   const putNewImage = () => {
-    if (imageArray.length == 5) {
+    if (imageArray.length == 7) {
       let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
 
       let m1 = imageArray[0].value
       let m2 = imageArray[1].value
-      let m3 = imageArray[2].value
-      let m4 = imageArray[3].value
-      let m5 = imageArray[4].value
+      // let m3 = imageArray[2].value
+      // let m4 = imageArray[3].value
+      // let m5 = imageArray[3].value
 
-      m1 = resize(m1,size(m2))
+      m1 = resize(m1, size(m2))
 
-      let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(m2, imageArray[1].factor))
-      let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(m3, imageArray[2].factor))
-      let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(m4, imageArray[3].factor))
-      let filter4 = add(multiply(filter3, 1 - imageArray[4].factor), multiply(m5, imageArray[4].factor))
-      filter4.map((value:any, index:any) => {
-        imageCurrData.data[index] = parseInt(value)
-      })
+      let filter1 = add(multiply(m1, 1 - imageArray[1].factor), multiply(imageArray[1].value, imageArray[1].factor));
+      let filter2 = add(multiply(filter1, 1 - imageArray[2].factor), multiply(imageArray[2].value, imageArray[2].factor));
+      let filter3 = add(multiply(filter2, 1 - imageArray[3].factor), multiply(imageArray[3].value, imageArray[3].factor));
+      let filter4 = add(multiply(filter3, 1 - imageArray[4].factor), multiply(imageArray[4].value, imageArray[4].factor));
+      let filter5 = add(multiply(filter4, 1 - imageArray[5].factor), multiply(imageArray[5].value, imageArray[5].factor));
+      let filter6 = add(multiply(filter5, 1 - imageArray[6].factor), multiply(imageArray[6].value, imageArray[6].factor));
+      filter6.map((value: any, index: any) => {
+        imageCurrData.data[index] = parseInt(value);
+      });
       // lo logre una vez lo puedo hacer otra vez
       // let aux2 ;
       // aux2 = new Uint8ClampedArray(filter4)
@@ -281,7 +330,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
       ctx?.putImageData(imageCurrData, 0, 0);
     }
   }
-
+  // ! poner el factor para mejorar el filtro
   const applyFilterII = (filter: any, factor: any = 1, key = 0, filteName: string) => {
     let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
     let pos = 0;
@@ -310,10 +359,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
 
 
           //TODO agrega a los r g b como arreglos
-          // imageCurrData.data[pos * 4] = Math.round(newRed);
-          // imageCurrData.data[pos * 4 + 1] = Math.round(newGreen);
-          // imageCurrData.data[pos * 4 + 2] = Math.round(newBlue);
-          // imageCurrData.data[pos * 4 + 3] = newAlpha;
+
           newA[pos * 4] = Math.round(newRed);
           newA[pos * 4 + 1] = Math.round(newGreen);
           newA[pos * 4 + 2] = Math.round(newBlue);
@@ -324,6 +370,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
       if (filteName == 'expose') {
         imageArray[2].value = newA
       } else {
+        console.log('sharp')
         imageArray[1].value = newA
       }
       // if (!found) {
@@ -375,12 +422,14 @@ const AndroideCV = forwardRef((props: any, ref) => {
   }
 
   return (
-    <>androideCV
-      <canvas ref={canvasRef}></canvas>
-      <IonLoading
-        isOpen={loading}
-        message={'Loading...'}
-      />
+    <>
+      <div className="canvas-container">
+        <canvas ref={canvasRef}></canvas>
+        <IonLoading
+          isOpen={loading}
+          message={'Loading...'}
+        />
+      </div>
     </>
   )
 })
