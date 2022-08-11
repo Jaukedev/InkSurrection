@@ -262,6 +262,51 @@ const AndroideCV = forwardRef((props: any, ref) => {
     }
 
   }
+  const shadows = (e: any, update: any = true) => {
+
+    let newA: any = [];
+    // let factor = parseInt(e.target.value) / 100
+    let pos = 0;
+    let condition;
+    let fact;
+
+    if (imageCurrData && imageCurr) {
+      imageR.map((rowValue: any, i: number) => {
+        rowValue.map((colValue: any, j: number) => {
+          let newRed = 0, newGreen = 0, newBlue = 0, newAlpha = 0;
+          let u = (imageR[i][j] + imageG[i][j] + imageB[i][j]) / 3;
+          let value;
+          var sum = (imageR[i][j] +
+            imageG[i][j] +
+            imageB[i][j] / 3);
+          pos = i * imageCurr.width + j;
+
+          e.target.name == 'black' ? condition = sum < 99 : condition = sum > 200;
+          e.target.name == 'black' ? fact = -1 : fact = 1;
+          newRed = imageR[i][j];
+          newGreen = imageG[i][j];
+          newBlue = imageB[i][j];
+          newAlpha = imageA[i][j];
+
+          if (condition) { //! esta condicion tiene que ser en base a la imagen original
+
+            newRed = imageR[i][j] + 30 * fact;
+            newGreen = imageG[i][j] + 30 * fact;
+            newBlue = imageB[i][j] + 30 * fact;
+            newAlpha = imageA[i][j];
+
+          }
+          newA[pos * 4] = Math.round(newRed);
+          newA[pos * 4 + 1] = Math.round(newGreen);
+          newA[pos * 4 + 2] = Math.round(newBlue);
+          newA[pos * 4 + 3] = newAlpha;
+        })
+      })
+      e.target.name == 'black' ? imageArray[6].value = newA : imageArray[5].value = newA
+
+    }
+
+  }
   const filtering = (value: any, name: any) => {
     //TODO ACA CAMBIAMOS EL FILTRO SILO QUE SE CAMBIA
 
@@ -366,19 +411,56 @@ const AndroideCV = forwardRef((props: any, ref) => {
           newA[pos * 4 + 3] = newAlpha;
         })
       })
-      // ctx?.putImageData(imageCurrData, 0, 0);
       if (filteName == 'expose') {
         imageArray[2].value = newA
       } else {
         console.log('sharp')
         imageArray[1].value = newA
       }
-      // if (!found) {
-      //   setauxImageCurr({ key: filteName, value: newA })
-      //   setImageArray([...imageArray, { key: filteName, value: newA }])
-      //   console.log('no encuentro el filtro que se esta poniendo', { key: filteName, value: newA })
-      // }
+    }
+  }
+  const applyFilterHL = (filter: any, factor: any = 1, key = 0, filteName: string) => {
+    let ctx: CanvasRenderingContext2D = canvasRef.current?.getContext('2d')!;
+    let pos = 0;
+    let newA: any = [];
+    if (imageCurrData && imageCurr) {
 
+      imageR.map((rowValue: any, i: number) => {
+        rowValue.map((colValue: any, j: number) => {
+          let newRed = 0;
+          let newGreen = 0;
+          let newBlue = 0;
+          let newAlpha = 0;
+          // !condicion para evaluar la iluminación
+          filter.map((ejeX: any, x: number) => {
+            ejeX.map((ejeY: any, y: number) => {
+              if (imageR[i + (x - 1)] == undefined) { return; }
+              if (imageR[i + (x - 1)][j + (y - 1)] == undefined) { return; }
+              newRed += filter[x][y] * imageR[i + (x - 1)][j + (y - 1)];
+              newGreen += filter[x][y] * imageG[i + (x - 1)][j + (y - 1)];
+              newBlue += filter[x][y] * imageB[i + (x - 1)][j + (y - 1)];
+            })
+
+          })
+          newAlpha = imageA[i][j];
+
+          pos = i * imageCurr.width + j; // esta se invierte para rotar
+
+
+          //TODO agrega a los r g b como arreglos
+
+          newA[pos * 4] = Math.round(newRed);
+          newA[pos * 4 + 1] = Math.round(newGreen);
+          newA[pos * 4 + 2] = Math.round(newBlue);
+          newA[pos * 4 + 3] = newAlpha;
+        })
+      })
+      if (filteName == 'expose') {
+        imageArray[2].value = newA
+      } else {
+        console.log('sharp')
+        imageArray[1].value = newA
+      }
     }
   }
   const generatePixelMatrix = () => {

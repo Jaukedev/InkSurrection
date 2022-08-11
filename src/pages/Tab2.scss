@@ -1,4 +1,4 @@
-.containeer {
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,6 +21,37 @@
         color: #9c9c9c;
         margin: 0.5rem;
       }
+    }
+  }
+  & .filter-container {
+    margin: 1rem;
+    & .caption {
+      margin: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+      & .texts {
+        & .tittle {
+          color: #ccc9c9;
+          font-size: 15px;
+          padding-left: 0.8rem;
+          text-transform: capitalize;
+          font-weight: 600;
+        }
+        & .value {
+          color: #6a6b6d;
+          font-size: 14px;
+          padding-left: 0.5rem;
+          text-transform: capitalize;
+          font-weight: bold;
+        }
+      }
+    }
+    & .range {
+      width: 100%;
+      height: 40px;
     }
   }
   & .image-container {
