@@ -11,8 +11,6 @@ const Setting = (props) => {
     sepia: false,
     invert: false,
   });
-  //   useEffect(() => {
-  //   });
   var onchange = props.onChange;
   var showAll = props.showAll;
 
