@@ -62,12 +62,7 @@ const Tab2: React.FC = () => {
     amount: 0,
     index: 5,
   },])
-  const [filterSelected, setFilterSelected] = useState({
-    name: "Exposición",
-    filterName: "expose",
-    amount: 0,
-    index: 0,
-  });
+  const [filterSelected, setFilterSelected] = useState<any>();
   const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [{ filter: 0, filterAmount: 0 }] });
 
   function settingFilter(filter: any) {
@@ -79,17 +74,23 @@ const Tab2: React.FC = () => {
       setLoading(true);
     }, 500);
     timerRef.current = setTimeout(() => {
+      console.log(filterSelected.name, filter.target.value, filter.target.name)
       found = settings.find((element: any) => element.filterName == filter.target.name);
       settingsAux = settings;
       settingsAux[found.index].amount = filter.target.value;
       setSettings(settingsAux)
-      setFilterSelected(filter)
+      // setFilterSelected(filter)
       if (filterRef.current) {
         filterRef.current.saluda(filter)
       }
       setLoading(false);
     }, 500);
 
+  }
+  function selectFilter(filter:any,value:any,filterName:any) {
+    console.log(filter, value);
+    setFilterSelected({ name: filter, value: value, filterName: filterName });
+    setOpenModal(false);
   }
   const disableRange = () => {
     expoRef.current.disebled = true;
@@ -106,7 +107,7 @@ const Tab2: React.FC = () => {
         message={'Loading...'}
       />
       <IonContent className="container">
-        <div >
+        <div className="header">
           <IonButton className="button" fill="clear" color="#6A6B6D" routerLink="/tab1">
             <IonIcon className="icon" icon={arrowBack} size="large" ></IonIcon>
           </IonButton>
@@ -120,33 +121,54 @@ const Tab2: React.FC = () => {
         {/* <OpenCv ref={filterRef} disbleRange={disableRange}></OpenCv>  */}
         <AndroideCV ref={filterRef} disbleRange={disableRange} ></AndroideCV>
 
-        {filterSelected.name !== "none" ? (
+        {filterSelected ? (
+          <IonRow className="filter-container" key={filterSelected.name}>
+            <div className="caption">
+              <div className="texts">
+                <label className="tittle">
+                  {filterSelected.name}
+                </label>
+                <span className="value">{ }</span>
+              </div>
+            </div>
+            <div className="range">
+              <input type='range' step={1}
+                min={0}
+                // ref={filterSelected.reference}
+                // value={filterSelected.value}
+                name={filterSelected.filterName}
+                onChange={settingFilter}
+                disabled={loading}
+                max={100} ></input>
+            </div>
 
-          settings.map(function (setting: any, index: number) {
-            return (
-              <IonRow className="filter-container" key={setting.name}>
-                <div className="caption">
-                  <div className="texts">
-                    <label className="tittle">
-                      {setting.name}
-                    </label>
-                    <span className="value">{ }</span>
-                  </div>
-                </div>
-                <div className="range">
-                  <input type='range' step={1}
-                    min={0}
-                    ref={setting.reference}
-                    name={setting.filterName}
-                    // value={setting.amount}
-                    onChange={settingFilter}
-                    disabled ={loading}
-                    max={100} ></input>
-                </div>
+          </IonRow>
+          // settings.map(function (setting: any, index: number) {
+          //   return (
+          //     <IonRow className="filter-container" key={setting.name}>
+          //       <div className="caption">
+          //         <div className="texts">
+          //           <label className="tittle">
+          //             {setting.name}
+          //           </label>
+          //           <span className="value">{ }</span>
+          //         </div>
+          //       </div>
+          //       <div className="range">
+          //         <input type='range' step={1}
+          //           min={0}
+          //           ref={setting.reference}
+          //           name={setting.filterName}
+          //           onChange={settingFilter}
+          //           disabled ={loading}
+          //           max={100} ></input>
+          //       </div>
 
-              </IonRow>
-            );
-          })
+          //     </IonRow>
+              
+          //   );
+            
+          // })
 
 
         ) : (
@@ -203,7 +225,7 @@ const Tab2: React.FC = () => {
                             fill="outline"
                             size="small"
                             onClick={() =>
-                              settingFilter(setting)
+                              selectFilter(setting.name, setting.amount, setting.filterName)
                             }
                           >
                             Usar
