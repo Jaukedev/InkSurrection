@@ -146,7 +146,7 @@ const Tab2: React.FC = () => {
             <div className="range">
               <input type='range' step={1}
                 min={filterSelected.min}
-                defaultValue={0}
+                defaultValue={filterSelected.value}
                 name={filterSelected.filterName}
                 onChange={settingFilter}
                 disabled={loading}
