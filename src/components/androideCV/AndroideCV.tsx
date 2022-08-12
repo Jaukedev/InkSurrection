@@ -185,13 +185,12 @@ const AndroideCV = forwardRef((props: any, ref) => {
     imageArray[3].value = newA
   }
   const saturation = (e: any, update: any = true) => {
-    let beta = 150;
+    let beta = 100;
     let sum = imageCurrData.data.reduce((previous: any, current: any) => current += previous);
     // let u = sum / imageSettings.imageData.data.length;
     let alpha: number;
     beta == 255 ? alpha = 0 : alpha = (255 + beta) / (255 - beta);
     let pos = 0;
-    // let factor: any = parseInt(e.target.value) / 100;;
     let newA: any = [];
     if (imageCurrData && imageCurr) {
 
@@ -201,7 +200,7 @@ const AndroideCV = forwardRef((props: any, ref) => {
           let u = (imageR[i][j] + imageG[i][j] + imageB[i][j]) / 3;
 
           newRed = Math.round(alpha * (imageR[i][j] - u) + u);
-          newGreen = Math.round(alpha * (imageB[i][j] - u) + u);
+          newGreen = Math.round(alpha * (imageG[i][j] - u) + u);
           newBlue = Math.round(alpha * (imageB[i][j] - u) + u);
           newAlpha = imageA[i][j];
 

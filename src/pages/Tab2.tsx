@@ -25,6 +25,8 @@ const Tab2: React.FC = () => {
     reference: expoRef,
     amount: 0,
     index: 0,
+    min: 0,
+    max: 100
 
   },
   {
@@ -33,6 +35,8 @@ const Tab2: React.FC = () => {
     reference: contRef,
     amount: 0,
     index: 1,
+    min: 0,
+    max: 100
   },
   {
     name: "Negros",
@@ -40,6 +44,8 @@ const Tab2: React.FC = () => {
     reference: blackRef,
     amount: 0,
     index: 2,
+    min: 0,
+    max: 100
   },
   {
     name: "Blancos",
@@ -47,6 +53,8 @@ const Tab2: React.FC = () => {
     reference: whiteRef,
     amount: 0,
     index: 3,
+    min: 0,
+    max: 100
   },
   {
     name: "Saturación",
@@ -54,6 +62,8 @@ const Tab2: React.FC = () => {
     reference: satuRef,
     amount: 0,
     index: 4,
+    min: 0,
+    max: 100
   },
   {
     name: "Textura",
@@ -61,6 +71,8 @@ const Tab2: React.FC = () => {
     reference: texRef,
     amount: 0,
     index: 5,
+    min: 0,
+    max: 100
   },])
   const [filterSelected, setFilterSelected] = useState<any>();
   const [editionData, setEditionData] = useState<any>({ filterSelected: 0, filterArray: [{ filter: 0, filterAmount: 0 }] });
@@ -87,9 +99,9 @@ const Tab2: React.FC = () => {
     }, 500);
 
   }
-  function selectFilter(filter:any,value:any,filterName:any) {
+  function selectFilter(filter: any, value: any, filterName: any, min:any    ) {
     console.log(filter, value);
-    setFilterSelected({ name: filter, value: value, filterName: filterName });
+    setFilterSelected({ name: filter, value: value, filterName: filterName ,min: min});
     setOpenModal(false);
   }
   const disableRange = () => {
@@ -133,9 +145,8 @@ const Tab2: React.FC = () => {
             </div>
             <div className="range">
               <input type='range' step={1}
-                min={0}
-                // ref={filterSelected.reference}
-                // value={filterSelected.value}
+                min={filterSelected.min}
+                defaultValue={0}
                 name={filterSelected.filterName}
                 onChange={settingFilter}
                 disabled={loading}
@@ -165,9 +176,9 @@ const Tab2: React.FC = () => {
           //       </div>
 
           //     </IonRow>
-              
+
           //   );
-            
+
           // })
 
 
@@ -207,7 +218,7 @@ const Tab2: React.FC = () => {
                 </div>
 
                 {settings.map(function (setting: any, index: number) {
-                  if(!loading){
+                  if (!loading) {
                     return (
                       <IonRow className="filter-container" key={setting.name}>
                         <div className="caption">
@@ -217,7 +228,7 @@ const Tab2: React.FC = () => {
                             </label>
                             <span className="value">{ }</span>
                           </div>
-  
+
                           <IonButton
                             className="button-fil buttonSelect"
                             shape="round"
@@ -225,7 +236,7 @@ const Tab2: React.FC = () => {
                             fill="outline"
                             size="small"
                             onClick={() =>
-                              selectFilter(setting.name, setting.amount, setting.filterName)
+                              selectFilter(setting.name, setting.amount, setting.filterName, setting.min)
                             }
                           >
                             Usar
@@ -233,15 +244,15 @@ const Tab2: React.FC = () => {
                         </div>
                         <div className="range">
                           <input type='range' step={1}
-                            min={0}
+                            min={setting.min}
                             disabled
                             value={setting.amount}
-                            max={100} onChange={settingFilter}></input>
+                            max={setting.max} onChange={settingFilter}></input>
                         </div>
-  
+
                       </IonRow>
                     );
-                  }else{
+                  } else {
                     return 'cargando'
                   }
                 })}
