@@ -25,7 +25,7 @@ const Tab2: React.FC = () => {
     reference: expoRef,
     amount: 0,
     index: 0,
-    min: 0,
+    min: -100,
     max: 100
 
   },
@@ -35,7 +35,7 @@ const Tab2: React.FC = () => {
     reference: contRef,
     amount: 0,
     index: 1,
-    min: 0,
+    min: -100,
     max: 100
   },
   {
@@ -44,7 +44,7 @@ const Tab2: React.FC = () => {
     reference: blackRef,
     amount: 0,
     index: 2,
-    min: 0,
+    min: -100,
     max: 100
   },
   {
@@ -53,7 +53,7 @@ const Tab2: React.FC = () => {
     reference: whiteRef,
     amount: 0,
     index: 3,
-    min: 0,
+    min: -100,
     max: 100
   },
   {
@@ -62,7 +62,7 @@ const Tab2: React.FC = () => {
     reference: satuRef,
     amount: 0,
     index: 4,
-    min: 0,
+    min: -100,
     max: 100
   },
   {
@@ -71,7 +71,7 @@ const Tab2: React.FC = () => {
     reference: texRef,
     amount: 0,
     index: 5,
-    min: 0,
+    min: -100,
     max: 100
   },])
   const [filterSelected, setFilterSelected] = useState<any>();
