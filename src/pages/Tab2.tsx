@@ -99,9 +99,9 @@ const Tab2: React.FC = () => {
     }, 500);
 
   }
-  function selectFilter(filter: any, value: any, filterName: any, min:any    ) {
+  function selectFilter(filter: any, value: any, filterName: any, min: any) {
     console.log(filter, value);
-    setFilterSelected({ name: filter, value: value, filterName: filterName ,min: min});
+    setFilterSelected({ name: filter, value: value, filterName: filterName, min: min });
     setOpenModal(false);
   }
   const disableRange = () => {
@@ -131,62 +131,65 @@ const Tab2: React.FC = () => {
         </div>
 
         {/* <OpenCv ref={filterRef} disbleRange={disableRange}></OpenCv>  */}
-        <AndroideCV ref={filterRef} disbleRange={disableRange} ></AndroideCV>
+        <div className="content">
+          <AndroideCV ref={filterRef} disbleRange={disableRange} ></AndroideCV>
 
-        {filterSelected ? (
-          <IonRow className="filter-container" key={filterSelected.name}>
-            <div className="caption">
-              <div className="texts">
-                <label className="tittle">
-                  {filterSelected.name}
-                </label>
-                <span className="value">{ }</span>
+          {filterSelected ? (
+            <IonRow className="filter-container" key={filterSelected.name}>
+              <div className="caption">
+                <div className="texts">
+                  <label className="tittle">
+                    {filterSelected.name}
+                  </label>
+                  <span className="value">{ }</span>
+                </div>
               </div>
+              <div className="range">
+                <input type='range' step={1}
+                  min={filterSelected.min}
+                  defaultValue={filterSelected.value}
+                  name={filterSelected.filterName}
+                  onChange={settingFilter}
+                  disabled={loading}
+                  max={100} ></input>
+              </div>
+
+            </IonRow>
+            // settings.map(function (setting: any, index: number) {
+            //   return (
+            //     <IonRow className="filter-container" key={setting.name}>
+            //       <div className="caption">
+            //         <div className="texts">
+            //           <label className="tittle">
+            //             {setting.name}
+            //           </label>
+            //           <span className="value">{ }</span>
+            //         </div>
+            //       </div>
+            //       <div className="range">
+            //         <input type='range' step={1}
+            //           min={0}
+            //           ref={setting.reference}
+            //           name={setting.filterName}
+            //           onChange={settingFilter}
+            //           disabled ={loading}
+            //           max={100} ></input>
+            //       </div>
+
+            //     </IonRow>
+
+            //   );
+
+            // })
+
+
+          ) : (
+            <div className="selectFilterPlease">
+              <span>Selecciona un filtro <br></br> para comenzar a editar</span>
             </div>
-            <div className="range">
-              <input type='range' step={1}
-                min={filterSelected.min}
-                defaultValue={filterSelected.value}
-                name={filterSelected.filterName}
-                onChange={settingFilter}
-                disabled={loading}
-                max={100} ></input>
-            </div>
+          )}
+        </div>
 
-          </IonRow>
-          // settings.map(function (setting: any, index: number) {
-          //   return (
-          //     <IonRow className="filter-container" key={setting.name}>
-          //       <div className="caption">
-          //         <div className="texts">
-          //           <label className="tittle">
-          //             {setting.name}
-          //           </label>
-          //           <span className="value">{ }</span>
-          //         </div>
-          //       </div>
-          //       <div className="range">
-          //         <input type='range' step={1}
-          //           min={0}
-          //           ref={setting.reference}
-          //           name={setting.filterName}
-          //           onChange={settingFilter}
-          //           disabled ={loading}
-          //           max={100} ></input>
-          //       </div>
-
-          //     </IonRow>
-
-          //   );
-
-          // })
-
-
-        ) : (
-          <div className="selectFilterPlease">
-            <span>Selecciona un filtro <br></br> para comenzar a editar</span>
-          </div>
-        )}
         <div className='footer'>
           <div className={`filter ${openModal ? "opened" : "closed"}`}>
             {openModal ? <div></div> :
